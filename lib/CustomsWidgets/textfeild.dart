@@ -4,9 +4,11 @@ class MyTextFeild extends StatefulWidget {
   final String hintText;
   final bool obscureText;
   final IconData? prefixIcon;
+  final TextEditingController? controller;
 
   const MyTextFeild({
     super.key,
+    this.controller,
     required this.hintText,
     required this.obscureText,
     required this.prefixIcon,
@@ -20,6 +22,7 @@ class _MyTextFeildState extends State<MyTextFeild> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: widget.controller,
       obscureText: widget.obscureText,
       decoration: InputDecoration(
         border: OutlineInputBorder(
