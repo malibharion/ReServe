@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:reserve/CustomsWidgets/studentFeeContainer.dart';
+import 'package:reserve/Functions/locationEnabler.dart';
+import 'package:reserve/Model/donation.dart';
+import 'package:reserve/StateManagment/Donations.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class OtherItmeDonationDetailScreen extends StatefulWidget {
-  final ImageProvider? image;
-  final String? name;
-  final String? location;
-  final String? description;
-  const OtherItmeDonationDetailScreen(
-      {super.key, this.image, this.name, this.location, this.description});
+  final Donation donation;
+  const OtherItmeDonationDetailScreen({super.key, required this.donation});
 
   @override
   State<OtherItmeDonationDetailScreen> createState() =>
@@ -18,66 +19,114 @@ class _OtherItmeDonationDetailScreenState
     extends State<OtherItmeDonationDetailScreen> {
   @override
   Widget build(BuildContext context) {
+    final donationProvider = Provider.of<DonationProvider>(context);
+    final SupabaseClient _supabase = Supabase.instance.client;
     return Scaffold(
       body: SafeArea(
-          child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ScreenTopContainer(
-              onTap: () => Navigator.pop(context),
-              image: widget.image!,
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
-            Text(
-              widget.name!,
-              style: TextStyle(fontFamily: 'semi-bold', fontSize: 20),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
-            Text(
-              widget.location!,
-              style: TextStyle(fontFamily: 'semi-bold', fontSize: 20),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
-            Text(
-              'Description',
-              style: TextStyle(fontFamily: 'semi-bold', fontSize: 20),
-            ),
-            Text(
-              widget.description!.length > 100
-                  ? widget.description!.substring(0, 100)
-                  : widget.description!,
-              style: TextStyle(fontFamily: 'light'),
-            ),
-            Spacer(),
-            Padding(
-              padding: EdgeInsets.only(bottom: 20),
-              child: ElevatedButton(
-                onPressed: () {},
-                child: Text(
-                  'Request',
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'semi-bold',
-                      color: Colors.white),
-                ),
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF5DCE35),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    minimumSize: Size(double.infinity, 50)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ScreenTopContainer(
+                onTap: () => Navigator.pop(context),
+                image: NetworkImage(widget.donation.imagePath),
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              Text(
+                widget.donation.productName,
+                style: const TextStyle(fontFamily: 'semi-bold', fontSize: 20),
+              ),
+              const SizedBox(height: 20),
+              const SizedBox(height: 20),
+              const Text(
+                'Description',
+                style: TextStyle(fontFamily: 'semi-bold', fontSize: 20),
+              ),
+              Text(
+                widget.donation.productDescription.length > 100
+                    ? widget.donation.productDescription.substring(0, 100)
+                    : widget.donation.productDescription,
+                style: const TextStyle(fontFamily: 'light'),
+              ),
+              if (widget.donation.username != null) ...[
+                const SizedBox(height: 20),
+                const Text(
+                  'Donated by',
+                  style: TextStyle(fontFamily: 'semi-bold', fontSize: 20),
+                ),
+                Text(
+                  widget.donation.username!,
+                  style: const TextStyle(fontFamily: 'light'),
+                ),
+              ],
+              if (widget.donation.mobileNumber != null) ...[
+                const SizedBox(height: 10),
+                Text(
+                  widget.donation.mobileNumber!,
+                  style: const TextStyle(fontFamily: 'light'),
+                ),
+              ],
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    try {
+                      final userId = _supabase.auth.currentUser?.id;
+                      if (userId == null) {
+                        // Handle case where user is not logged in
+                        return;
+                      }
+
+                      // Get current location for the request
+                      final position =
+                          await LocationService.getCurrentLocation();
+                      if (position == null) return;
+
+                      final address =
+                          await LocationService.getAddressFromLatLng(position);
+                      if (address == null) return;
+
+                      await donationProvider.otherDonations(
+                        isFood: false,
+                        donationId: widget.donation.id,
+                        requesterId: userId,
+                        city: address['city'] ?? 'Unknown',
+                        area: address['area'] ?? 'Unknown',
+                        province: address['province'] ?? 'Unknown',
+                        country: address['country'] ?? 'Unknown',
+                      );
+
+                      // Show success message
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Request sent successfully')),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Error: $e')),
+                      );
+                    }
+                  },
+                  child: const Text(
+                    'Request',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'semi-bold',
+                        color: Colors.white),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF5DCE35),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      minimumSize: const Size(double.infinity, 50)),
+                ),
+              ),
+            ],
+          ),
         ),
-      )),
+      ),
     );
   }
 }

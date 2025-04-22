@@ -117,7 +117,6 @@ class _MainOrganizationScreenState extends State<MainOrganizationScreen> {
                     onTap: () {},
                     image: AssetImage(Images[index]),
                     title: title[index],
-                    location: location[index],
                   ),
                 ),
                 itemCount: 10,
