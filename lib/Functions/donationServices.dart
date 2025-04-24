@@ -42,7 +42,7 @@ class DonationService {
     print("Address: $city, $area, $province, $country");
     print("User ID: $userId");
 
-    final response = await supabase.from('other_donations').insert({
+    final response = await supabase.from('other_donations_request').insert({
       'product_name': productName,
       'product_description': productDescription,
       'latitude': latitude,
@@ -112,6 +112,24 @@ class DonationService {
     required String country,
   }) async {
     await supabase.from('donation_requests').insert({
+      'donation_id': donationId,
+      'requester_id': requesterId,
+      'city': city,
+      'area': area,
+      'province': province,
+      'country': country,
+    });
+  }
+
+  Future<void> requestOtherDonation({
+    required String donationId,
+    required String requesterId,
+    required String city,
+    required String area,
+    required String province,
+    required String country,
+  }) async {
+    await supabase.from('other_donation_request').insert({
       'donation_id': donationId,
       'requester_id': requesterId,
       'city': city,

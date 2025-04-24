@@ -3,11 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:reserve/CustomsWidgets/studentFeeContainer.dart';
 import 'package:reserve/Functions/locationEnabler.dart';
 import 'package:reserve/Model/donation.dart';
+import 'package:reserve/Model/otherDonationModel.dart';
 import 'package:reserve/StateManagment/Donations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class OtherItmeDonationDetailScreen extends StatefulWidget {
-  final Donation donation;
+  final OtherDonation donation;
   const OtherItmeDonationDetailScreen({super.key, required this.donation});
 
   @override
@@ -75,11 +76,9 @@ class _OtherItmeDonationDetailScreenState
                     try {
                       final userId = _supabase.auth.currentUser?.id;
                       if (userId == null) {
-                        // Handle case where user is not logged in
                         return;
                       }
 
-                      // Get current location for the request
                       final position =
                           await LocationService.getCurrentLocation();
                       if (position == null) return;

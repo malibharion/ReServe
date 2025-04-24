@@ -4,17 +4,18 @@ import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:reserve/Functions/locationEnabler.dart';
 import 'package:reserve/Model/donation.dart';
+import 'package:reserve/Model/otherDonationModel.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DonationProvider with ChangeNotifier {
   final SupabaseClient _supabase = Supabase.instance.client;
   List<Donation> _donations = [];
-  List<Donation> _otherdonations = [];
+  List<OtherDonation> _otherdonations = [];
   File? _selectedImage;
   Position? _currentPosition;
   Map<String, String>? _currentAddress;
   List<Donation> get donations => _donations;
-  List<Donation> get otherDonationsItems => _otherdonations;
+  List<OtherDonation> get otherDonationsItems => _otherdonations;
   bool _isLoading = false;
 
   File? get selectedImage => _selectedImage;
@@ -76,8 +77,9 @@ class DonationProvider with ChangeNotifier {
           .select('*, user_profiles(username, mobile_number)')
           .order('created_at', ascending: false);
 
-      _otherdonations =
-          (response as List).map((data) => Donation.fromJson(data)).toList();
+      _otherdonations = (response as List)
+          .map((data) => OtherDonation.fromJson(data))
+          .toList();
       print(_otherdonations);
     } catch (e) {
       print('Error fetching donations: $e');
@@ -124,9 +126,9 @@ class DonationProvider with ChangeNotifier {
       _isLoading = true;
       notifyListeners();
 
-      await _supabase.from('donation_requests').insert({
-        'isFood': isFood,
-        'donation_id': donationId,
+      await _supabase.from('other_donation_requests').insert({
+        'isfood': isFood,
+        'other_donation_id': donationId,
         'requester_id': requesterId,
         'city': city,
         'area': area,
