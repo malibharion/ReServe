@@ -1,76 +1,118 @@
+// screens/student_fee_donation_screen.dart
 import 'package:flutter/material.dart';
 import 'package:reserve/CustomsWidgets/studentFeeContainer.dart';
 import 'package:reserve/CustomsWidgets/textfeild.dart';
 
-class StudnetFeeDonationScreen extends StatefulWidget {
-  const StudnetFeeDonationScreen({super.key});
+class StudentFeeDonationScreen extends StatefulWidget {
+  const StudentFeeDonationScreen({super.key});
 
   @override
-  State<StudnetFeeDonationScreen> createState() =>
-      _StudnetFeeDonationScreenState();
+  State<StudentFeeDonationScreen> createState() =>
+      _StudentFeeDonationScreenState();
 }
 
-class _StudnetFeeDonationScreenState extends State<StudnetFeeDonationScreen> {
+class _StudentFeeDonationScreenState extends State<StudentFeeDonationScreen> {
+  final _nameController = TextEditingController();
+  final _amountController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _amountController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submitDonation() async {
+    if (_nameController.text.isEmpty || _amountController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill all fields')),
+      );
+      return;
+    }
+
+    try {
+      final amount = double.tryParse(_amountController.text);
+      if (amount == null || amount <= 0) {
+        throw Exception('Please enter a valid amount');
+      }
+
+      // Here you would typically:
+      // 1. Process payment (using a payment gateway)
+      // 2. Record the donation in your database
+      // 3. Show success message
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Donation submitted successfully!')),
+      );
+
+      // Clear form
+      _nameController.clear();
+      _amountController.clear();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error submitting donation: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
+        child: SingleChildScrollView(
           child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Column(
-          children: [
-            ScreenTopContainer(
-              onTap: () {
-                print('On tap was fired');
-                Navigator.pop(context);
-              },
-              image: AssetImage('assets/images/kidEducation.png'),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.05,
-            ),
-            Text(
-              'Help Students to get better education',
-              style: TextStyle(fontFamily: 'semi-bold', fontSize: 20),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
-            MyTextFeild(
-              prefixIcon: Icons.person,
-              hintText: 'Enter Your Name',
-              obscureText: false,
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
-            MyTextFeild(
-              prefixIcon: Icons.money,
-              hintText: 'Enter amount',
-              obscureText: false,
-            ),
-            Spacer(),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: ElevatedButton(
-                onPressed: () {},
-                child: Text(
-                  'Donate',
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'semi-bold',
-                      color: Colors.white),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              children: [
+                ScreenTopContainer(
+                  onTap: () => Navigator.pop(context),
+                  image: const AssetImage('assets/images/kidEducation.png'),
                 ),
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF5DCE35),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    minimumSize: Size(double.infinity, 50)),
-              ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Help Students to get better education',
+                  style: TextStyle(fontFamily: 'semi-bold', fontSize: 20),
+                ),
+                const SizedBox(height: 20),
+                MyTextFeild(
+                  controller: _nameController,
+                  prefixIcon: Icons.person,
+                  hintText: 'Enter Your Name',
+                  obscureText: false,
+                ),
+                const SizedBox(height: 20),
+                MyTextFeild(
+                  controller: _amountController,
+                  prefixIcon: Icons.money,
+                  hintText: 'Enter amount',
+                  obscureText: false,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20, top: 20),
+                  child: ElevatedButton(
+                    onPressed: _submitDonation,
+                    child: const Text(
+                      'Donate',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'semi-bold',
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF5DCE35),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      minimumSize: const Size(double.infinity, 50),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      )),
+      ),
     );
   }
 }

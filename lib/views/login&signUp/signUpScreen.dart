@@ -141,7 +141,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     children: [
                       Text('Already have an account?'),
                       Text(
-                        'login Up',
+                        'Log In',
                         style: TextStyle(color: Colors.blue),
                       ),
                     ],

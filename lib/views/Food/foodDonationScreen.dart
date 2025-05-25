@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:reserve/CustomsWidgets/textfeild.dart';
 import 'package:reserve/Functions/donationServices.dart';
-import 'package:reserve/Functions/locationEnabler.dart';
 import 'package:reserve/StateManagment/Donations.dart';
 import 'package:reserve/StateManagment/authProvider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -25,165 +24,230 @@ class _FoodDonationScreenState extends State<FoodDonationScreen> {
     final donationProvider = Provider.of<DonationProvider>(context);
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        title:
-            Text('Donate Food Item', style: TextStyle(fontFamily: 'semi-bold')),
+        title: const Text('Donate Food Item',
+            style: TextStyle(fontFamily: 'semi-bold')),
         centerTitle: true,
+        backgroundColor: const Color(0xFF5DCE35),
+        elevation: 0,
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                MyTextFeild(
-                  controller: _productNameController,
-                  prefixIcon: Icons.shopping_bag,
-                  hintText: 'Product Name',
-                  obscureText: false,
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                MyTextFeild(
-                  controller: _productDescriptionController,
-                  prefixIcon: Icons.description,
-                  hintText: 'Product Description',
-                  obscureText: false,
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-
-                // Image Picker Button
-                ElevatedButton(
-                  onPressed: () {
-                    print("🔸 Button pressed - calling pickImage()");
-                    donationProvider.pickImage();
-                  },
-                  child: Icon(Icons.add_a_photo, color: Colors.white),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF5DCE35),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    minimumSize: Size(double.infinity, 50),
-                  ),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  donationProvider.selectedImage != null
-                      ? 'Image selected'
-                      : 'Add Product Image',
-                  style: TextStyle(fontSize: 16.sp, fontFamily: 'light'),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-
-                // Location Capture Button
-                ElevatedButton(
-                  onPressed: () {
-                    print("🔸 Button pressed - calling location function()");
-                    donationProvider.captureLocation();
-                  },
-                  child: Icon(Icons.location_on, color: Colors.white),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF5DCE35),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    minimumSize: Size(double.infinity, 50),
-                  ),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  donationProvider.currentPosition != null
-                      ? 'Location captured: ${donationProvider.currentPosition!.latitude}, ${donationProvider.currentPosition!.longitude}'
-                      : 'No location captured',
-                  style: TextStyle(fontSize: 16.sp, fontFamily: 'light'),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-
-                // Donate Button
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      if (_productNameController.text.isEmpty ||
-                          _productDescriptionController.text.isEmpty ||
-                          donationProvider.selectedImage == null ||
-                          donationProvider.currentPosition == null ||
-                          donationProvider.currentAddress == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Please fill all fields, pick image, and capture location.',
-                            ),
-                          ),
-                        );
-                        return;
-                      }
-
-                      donationProvider.setLoading(true);
-
-                      try {
-                        final imageUrl = await DonationService()
-                            .uploadImage(donationProvider.selectedImage!);
-
-                        // Use captured position and address from provider
-                        final position = donationProvider.currentPosition!;
-                        final address = donationProvider.currentAddress!;
-
-                        await DonationService().donateFoodItem(
-                          productName: _productNameController.text,
-                          productDescription:
-                              _productDescriptionController.text,
-                          imageUrl: imageUrl,
-                          latitude: position.latitude,
-                          longitude: position.longitude,
-                          city: address['city'] ?? '',
-                          area: address['area'] ?? '',
-                          province: address['province'] ?? '',
-                          country: address['country'] ?? '',
-                          userId:
-                              Supabase.instance.client.auth.currentUser?.id ??
-                                  "",
-                        );
-                        print('Donation added successfully!');
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              content: Text('Donation added successfully!')),
-                        );
-
-                        donationProvider.clear();
-                        Navigator.pop(context);
-                      } catch (e) {
-                        print('Failed: ${e.toString()}');
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Failed: ${e.toString()}')),
-                        );
-                      }
-
-                      donationProvider.setLoading(false);
-                    },
-                    child: donationProvider.isLoading
-                        ? CircularProgressIndicator(color: Colors.white)
-                        : Text(
-                            'Donate',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontFamily: 'semi-bold',
-                              color: Colors.white,
-                            ),
-                          ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF5DCE35),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+      body: Stack(
+        children: [
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(15),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    /// Title Card
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 10,
+                            color: Colors.grey.withOpacity(0.2),
+                            offset: const Offset(0, 4),
+                          )
+                        ],
                       ),
-                      minimumSize: Size(double.infinity, 50),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('Let’s Share the Blessings 🍱',
+                              style: TextStyle(
+                                  fontFamily: 'semi-bold', fontSize: 20)),
+                          const SizedBox(height: 10),
+                          const Text(
+                            'Fill in the food details and contribute to your community.',
+                            style: TextStyle(fontFamily: 'light', fontSize: 14),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 25),
+
+                    /// Product Name
+                    MyTextFeild(
+                      controller: _productNameController,
+                      prefixIcon: Icons.fastfood,
+                      hintText: 'Product Name',
+                      obscureText: false,
+                    ),
+                    const SizedBox(height: 16),
+
+                    /// Description
+                    MyTextFeild(
+                      controller: _productDescriptionController,
+                      prefixIcon: Icons.description,
+                      hintText: 'Product Description',
+                      obscureText: false,
+                    ),
+                    const SizedBox(height: 16),
+
+                    /// Image Picker
+                    GestureDetector(
+                      onTap: donationProvider.pickImage,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                              color: const Color(0xFF5DCE35), width: 1),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.add_a_photo,
+                                color: Color(0xFF5DCE35)),
+                            const SizedBox(width: 10),
+                            Text(
+                              donationProvider.selectedImage != null
+                                  ? 'Image Selected'
+                                  : 'Add Product Image',
+                              style: const TextStyle(
+                                  fontSize: 16, fontFamily: 'light'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    /// Location Capture
+                    GestureDetector(
+                      onTap: donationProvider.captureLocation,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                              color: const Color(0xFF5DCE35), width: 1),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.location_on,
+                                color: Color(0xFF5DCE35)),
+                            const SizedBox(width: 10),
+                            Text(
+                              donationProvider.currentPosition != null
+                                  ? 'Location Captured'
+                                  : 'Capture Location',
+                              style: const TextStyle(
+                                  fontSize: 16, fontFamily: 'light'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    if (donationProvider.currentPosition != null)
+                      Text(
+                        '${donationProvider.currentPosition!.latitude}, ${donationProvider.currentPosition!.longitude}',
+                        style:
+                            const TextStyle(fontSize: 14, fontFamily: 'light'),
+                      ),
+
+                    const SizedBox(height: 30),
+
+                    /// Donate Button
+                    ElevatedButton(
+                      onPressed: () async {
+                        if (_productNameController.text.isEmpty ||
+                            _productDescriptionController.text.isEmpty ||
+                            donationProvider.selectedImage == null ||
+                            donationProvider.currentPosition == null ||
+                            donationProvider.currentAddress == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  'Please fill all fields, pick image, and capture location.'),
+                            ),
+                          );
+                          return;
+                        }
+
+                        donationProvider.setLoading(true);
+
+                        try {
+                          final imageUrl = await DonationService()
+                              .uploadImage(donationProvider.selectedImage!);
+
+                          final position = donationProvider.currentPosition!;
+                          final address = donationProvider.currentAddress!;
+
+                          await DonationService().donateFoodItem(
+                            productName: _productNameController.text,
+                            productDescription:
+                                _productDescriptionController.text,
+                            imageUrl: imageUrl,
+                            latitude: position.latitude,
+                            longitude: position.longitude,
+                            city: address['city'] ?? '',
+                            area: address['area'] ?? '',
+                            province: address['province'] ?? '',
+                            country: address['country'] ?? '',
+                            userId:
+                                Supabase.instance.client.auth.currentUser?.id ??
+                                    "",
+                          );
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Donation added successfully!')),
+                          );
+
+                          donationProvider.clear();
+                          Navigator.pop(context);
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Error: ${e.toString()}')),
+                          );
+                        }
+
+                        donationProvider.setLoading(false);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF5DCE35),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        minimumSize: const Size(double.infinity, 55),
+                      ),
+                      child: donationProvider.isLoading
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : const Text(
+                              'Donate',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontFamily: 'semi-bold',
+                                  color: Colors.white),
+                            ),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
+
+          /// Optional Loading Overlay
+          if (donationProvider.isLoading)
+            Container(
+              color: Colors.black.withOpacity(0.3),
+              child: const Center(
+                child: CircularProgressIndicator(color: Colors.white),
+              ),
+            ),
+        ],
       ),
     );
   }

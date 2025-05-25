@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class HomeContainer2 extends StatefulWidget {
+class HomeContainer2 extends StatelessWidget {
   final String text;
   final void Function()? onTap;
   final ImageProvider image;
+
   const HomeContainer2({
     required this.text,
     required this.onTap,
@@ -13,54 +14,43 @@ class HomeContainer2 extends StatefulWidget {
   });
 
   @override
-  State<HomeContainer2> createState() => _HomeContainer2State();
-}
-
-class _HomeContainer2State extends State<HomeContainer2> {
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: widget.onTap,
+      onTap: onTap,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(20.r),
         child: Stack(
           children: [
-            ColorFiltered(
-              colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(0.5),
-                BlendMode.darken,
-              ),
-              child: Image(
-                image: widget.image,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                colorBlendMode: BlendMode.darken,
-                color: Colors.black.withOpacity(0.5),
-              ),
+            Image(
+              image: image,
+              width: double.infinity,
+              height: 180.h,
+              fit: BoxFit.cover,
+            ),
+            Container(
+              width: double.infinity,
+              height: 180.h,
+              color: Colors.black.withOpacity(0.4),
             ),
             Positioned(
-              top: MediaQuery.of(context).size.height * 0.2,
-              left: MediaQuery.of(context).size.width * 0.050,
-              right: MediaQuery.of(context).size.width * 0.1,
+              bottom: 20.h,
+              left: 20.w,
+              right: 20.w,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    widget.text,
+                    text,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20.sp,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
                     ),
-                    textAlign: TextAlign.center,
                   ),
-                  Icon(
-                    Icons.arrow_forward,
-                    color: Colors.white,
-                  ),
+                  Icon(Icons.arrow_forward, color: Colors.white),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

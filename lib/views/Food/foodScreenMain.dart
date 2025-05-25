@@ -27,6 +27,7 @@ class _FoodScreenMainState extends State<FoodScreenMain> {
     final donationProvider = Provider.of<DonationProvider>(context);
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF6FFF2),
       appBar: AppBar(
         title: const Text('Food'),
         centerTitle: true,

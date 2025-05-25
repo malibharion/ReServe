@@ -4,9 +4,7 @@ import 'package:reserve/views/Student%20Fee%20views/studentFeeDonationScreen.dar
 import 'package:reserve/views/Student%20Fee%20views/studentHelpScreen.dart';
 
 class StudentFeeMain extends StatefulWidget {
-  const StudentFeeMain({
-    super.key,
-  });
+  const StudentFeeMain({super.key});
 
   @override
   State<StudentFeeMain> createState() => _StudentFeeMainState();
@@ -15,86 +13,132 @@ class StudentFeeMain extends StatefulWidget {
 class _StudentFeeMainState extends State<StudentFeeMain> {
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ScreenTopContainer(
-                onTap: () {
-                  print('On tap was fired');
-                  Navigator.pop(context);
-                },
-                image: AssetImage('assets/images/kidEducation.png'),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.05,
-              ),
-              Text(
-                'Help Students to get better education',
-                style: TextStyle(fontFamily: 'semi-bold', fontSize: 20),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.05,
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Description',
-                  style: TextStyle(fontFamily: 'semi-bold', fontSize: 20),
+              // Header with Image
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: ScreenTopContainer(
+                  image: const AssetImage('assets/images/kidEducation.png'),
+                  onTap: () => Navigator.pop(context),
                 ),
               ),
-              Text(
-                'We help students to reach their goals by helping them finanacially and provide financial aids.Come and join us in our cause and help us toward a better society.Your liltle help can save someone future.',
-                style: TextStyle(fontFamily: 'regular', fontSize: 15),
+              const SizedBox(height: 24),
+
+              // Title
+              Center(
+                child: Text(
+                  'Empower a Future with Education',
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'semi-bold',
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Description Title
+              const Text(
+                'Why We Do This?',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: 'semi-bold',
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              // Description
+              const Text(
+                'Education is a basic right, yet many students struggle due to financial limitations. '
+                'We’re committed to bridging this gap by offering support to those in need. '
+                'Be a hero in someone’s life today — your help can change their tomorrow.',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontFamily: 'regular',
+                  height: 1.6,
+                ),
                 textAlign: TextAlign.justify,
               ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.07,
-              ),
-              ElevatedButton(
+              const SizedBox(height: 40),
+
+              // Donate Button
+              ElevatedButton.icon(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return StudnetFeeDonationScreen();
-                  }));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const StudentFeeDonationScreen()),
+                  );
                 },
-                child: Text(
-                  'Donate',
+                icon: const Icon(Icons.volunteer_activism, color: Colors.white),
+                label: const Text(
+                  'Donate Now',
                   style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'semi-bold',
-                      color: Colors.white),
+                    fontSize: 18,
+                    fontFamily: 'semi-bold',
+                    color: Colors.white,
+                  ),
                 ),
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF5DCE35),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    minimumSize: Size(double.infinity, 50)),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.02,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return StudnetHelpScreen();
-                  }));
-                },
-                child: Text(
-                  'Ask For Help',
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'semi-bold',
-                      color: Colors.black),
+                  backgroundColor: const Color(0xFF5DCE35),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  minimumSize: Size(screenWidth, 55),
+                  elevation: 3,
                 ),
-                style: ElevatedButton.styleFrom(
-                    side: BorderSide(width: 2, color: Color(0xFF5DCE35)),
-                    backgroundColor: Color(0xFFF9FDFA),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    minimumSize: Size(double.infinity, 50)),
               ),
+              const SizedBox(height: 20),
+
+              // Ask for Help Button
+              OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const StudentHelpScreen()),
+                  );
+                },
+                icon: const Icon(Icons.help_outline, color: Color(0xFF5DCE35)),
+                label: const Text(
+                  'Request Help',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontFamily: 'semi-bold',
+                    color: Colors.black,
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Color(0xFF5DCE35), width: 2),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  minimumSize: Size(screenWidth, 55),
+                  backgroundColor: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 30),
             ],
           ),
         ),

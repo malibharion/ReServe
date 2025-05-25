@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class HomeNavigationContainer extends StatefulWidget {
+class HomeNavigationContainer extends StatelessWidget {
   final String name;
   final ImageProvider? image;
+
   const HomeNavigationContainer({
     super.key,
     this.image,
@@ -10,26 +12,37 @@ class HomeNavigationContainer extends StatefulWidget {
   });
 
   @override
-  State<HomeNavigationContainer> createState() =>
-      _HomeNavigationContainerState();
-}
-
-class _HomeNavigationContainerState extends State<HomeNavigationContainer> {
-  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Container(
+          padding: EdgeInsets.all(16.w),
           decoration: BoxDecoration(
-            color: Color(0xFFEAFFE2),
-            borderRadius: BorderRadius.circular(15),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(15.r),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.greenAccent.withOpacity(0.3),
+                blurRadius: 8,
+                offset: Offset(0, 4),
+              )
+            ],
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(17.0),
-            child: Image(image: widget.image!),
+          child: Image(
+            image: image!,
+            width: 45.w,
+            height: 45.h,
           ),
         ),
-        Text(widget.name, style: TextStyle(fontFamily: 'regular')),
+        SizedBox(height: 8.h),
+        Text(
+          name,
+          style: TextStyle(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+            fontFamily: 'regular',
+          ),
+        ),
       ],
     );
   }

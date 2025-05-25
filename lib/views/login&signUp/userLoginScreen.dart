@@ -41,7 +41,7 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error)),
+        SnackBar(content: Text("An Error")),
       );
     }
   }
@@ -111,22 +111,6 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
                 ),
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.02,
-                ),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: Text(
-                    'Create a new account',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontFamily: 'semi-bold',
-                        color: Colors.black),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                      side: BorderSide(width: 2, color: Color(0xFF5DCE35)),
-                      backgroundColor: Color(0xFFF9FDFA),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      minimumSize: Size(double.infinity, 50)),
                 ),
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.02,

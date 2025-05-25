@@ -5,6 +5,8 @@ import 'package:reserve/Database/connection.dart';
 import 'package:reserve/StateManagment/Donations.dart';
 import 'package:reserve/StateManagment/authProvider.dart';
 import 'package:reserve/StateManagment/organzationColor.dart';
+import 'package:reserve/StateManagment/studentHelpProvider.dart';
+import 'package:reserve/StateManagment/themechnager.dart';
 import 'package:reserve/views/login&signUp/userLoginScreen.dart';
 
 void main() async {
@@ -13,6 +15,8 @@ void main() async {
     ChangeNotifierProvider(create: (_) => ChnageColor()),
     ChangeNotifierProvider(create: (_) => AuthProvider()),
     ChangeNotifierProvider(create: (_) => DonationProvider()),
+    ChangeNotifierProvider(create: (_) => ThemeProvider()),
+    ChangeNotifierProvider(create: (_) => StudentHelpProvider()),
   ], child: const MyApp()));
 }
 
@@ -22,10 +26,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return ScreenUtilInit(
       designSize: const Size(360, 870),
       minTextAdapt: true,
       builder: (context, child) => MaterialApp(
+        themeMode: themeProvider.themeMode,
+        theme: ThemeData.light(),
+        darkTheme: ThemeData.dark(),
         home: UserLoginScreen(),
       ),
     );

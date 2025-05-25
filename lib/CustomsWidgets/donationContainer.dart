@@ -22,54 +22,80 @@ class DonationContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: const Color(0xFFEAFFE2),
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Row(children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.3,
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Image(
-                    image: image!,
-                    fit: BoxFit.cover,
-                    height: 100,
-                    errorBuilder: (context, error, stackTrace) {
-                      print('❌ Error loading image: $error');
-                      return Container(
-                        color: Colors.grey[200],
-                        child: const Icon(Icons.broken_image),
-                      );
-                    },
-                  )),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.grey.shade200),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
             ),
-            const SizedBox(width: 10),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: Image(
+                image: image!,
+                width: 90,
+                height: 90,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    width: 90,
+                    height: 90,
+                    color: Colors.grey[200],
+                    child: const Icon(Icons.broken_image, color: Colors.grey),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title!,
+                    title ?? 'No Title',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      fontFamily: 'semi-bold',
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                      fontFamily: 'Poppins',
                     ),
                   ),
+                  const SizedBox(height: 6),
                   Text(
                     '$city, $province',
-                    style: const TextStyle(fontFamily: 'light'),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.black54,
+                      fontFamily: 'Poppins',
+                    ),
                   ),
+                  const SizedBox(height: 2),
                   Text(
-                    country!,
-                    style: const TextStyle(fontFamily: 'light'),
-                  )
+                    country ?? '',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: Colors.black38,
+                      fontFamily: 'Poppins',
+                    ),
+                  ),
                 ],
               ),
             )
-          ]),
+          ],
         ),
       ),
     );
