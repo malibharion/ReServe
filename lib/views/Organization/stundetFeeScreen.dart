@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reserve/Model/feeModels.dart';
+import 'package:reserve/StateManagment/localization.dart';
 import 'package:reserve/StateManagment/studentHelpProvider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -35,28 +36,44 @@ class _StudentRequestsScreenState extends State<StudentRequestsScreen>
 
   @override
   Widget build(BuildContext context) {
+    final localizationProvider = Provider.of<LocalizationProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Student Help Requests'),
+        title: Text(
+          localizationProvider.locale.languageCode == 'en'
+              ? 'Student Help Requests'
+              : 'طلباء کی مدد کی درخواستیں',
+        ),
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'Pending'),
-            Tab(text: 'Completed'),
+          tabs: [
+            Tab(
+                text: localizationProvider.locale.languageCode == 'en'
+                    ? 'Pending'
+                    : 'زیر التواء'),
+            Tab(
+                text: localizationProvider.locale.languageCode == 'en'
+                    ? 'Completed'
+                    : 'مکمل'),
           ],
         ),
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
-          _buildRequestList('Pending'),
-          _buildRequestList('Completed'),
+          _buildRequestList(localizationProvider.locale.languageCode == 'en'
+              ? 'Pending'
+              : 'زیر التواء'),
+          _buildRequestList(localizationProvider.locale.languageCode == 'en'
+              ? 'Completed'
+              : 'مکمل'),
         ],
       ),
     );
   }
 
   Widget _buildRequestList(String status) {
+    final localizationProvider = Provider.of<LocalizationProvider>(context);
     return Consumer<StudentHelpProvider>(
       builder: (context, provider, child) {
         if (provider.isLoading && provider.requests.isEmpty) {
@@ -68,7 +85,13 @@ class _StudentRequestsScreenState extends State<StudentRequestsScreen>
             .toList();
 
         if (filteredRequests.isEmpty) {
-          return const Center(child: Text('No requests found'));
+          return Center(
+            child: Text(
+              localizationProvider.locale.languageCode == 'en'
+                  ? 'No requests found'
+                  : 'کوئی درخواستیں نہیں ملیں',
+            ),
+          );
         }
 
         return RefreshIndicator(
@@ -85,6 +108,7 @@ class _StudentRequestsScreenState extends State<StudentRequestsScreen>
   }
 
   Widget _buildRequestCard(StudentHelpRequest request) {
+    final localizationProvider = Provider.of<LocalizationProvider>(context);
     return Card(
       margin: const EdgeInsets.all(10),
       child: Padding(
@@ -92,32 +116,50 @@ class _StudentRequestsScreenState extends State<StudentRequestsScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Name: ${request.name}',
-                style: const TextStyle(fontWeight: FontWeight.bold)),
-            Text('Father Name: ${request.fatherName}'),
+            Text(
+              '${localizationProvider.locale.languageCode == 'en' ? 'Name' : 'نام'}: ${request.name}',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              '${localizationProvider.locale.languageCode == 'en' ? 'Father Name' : 'ولدیت کا نام'}: ${request.fatherName}',
+            ),
             const SizedBox(height: 10),
-            const Text('Fee Slip:',
-                style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              localizationProvider.locale.languageCode == 'en'
+                  ? 'Fee Slip:'
+                  : 'فیس سلپ:',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
             Image.network(request.feeSlipUrl,
                 height: 150, width: double.infinity, fit: BoxFit.cover),
             const SizedBox(height: 10),
-            const Text('CNIC:', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              localizationProvider.locale.languageCode == 'en'
+                  ? 'CNIC:'
+                  : 'شناختی کارڈ:',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
             Image.network(request.cnicUrl,
                 height: 150, width: double.infinity, fit: BoxFit.cover),
             const SizedBox(height: 10),
-            Text('Status: ${request.status}',
-                style: TextStyle(
-                  color: request.status == 'Pending'
-                      ? Colors.orange
-                      : Colors.green,
-                  fontWeight: FontWeight.bold,
-                )),
+            Text(
+              '${localizationProvider.locale.languageCode == 'en' ? 'Status' : 'حیثیت'}: ${request.status}',
+              style: TextStyle(
+                color:
+                    request.status == 'Pending' ? Colors.orange : Colors.green,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             if (request.status == 'Pending')
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () => _updateStatus(request.id, 'Completed'),
-                  child: const Text('Mark as Completed'),
+                  child: Text(
+                    localizationProvider.locale.languageCode == 'en'
+                        ? 'Mark as Completed'
+                        : 'مکمل نشان زد کریں',
+                  ),
                 ),
               ),
           ],

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:reserve/CustomsWidgets/textfeild.dart';
-import 'package:reserve/Organization/mainScreen.dart';
-import 'package:reserve/Organization/organizationMainScreen.dart';
+import 'package:reserve/views/Organization/mainScreen.dart';
+import 'package:reserve/views/Organization/organizationMainScreen.dart';
+import 'package:reserve/StateManagment/localization.dart';
 import 'package:reserve/views/login&signUp/userLoginScreen.dart';
 
 class OrganizationLoginScreen extends StatefulWidget {
@@ -16,6 +18,7 @@ class OrganizationLoginScreen extends StatefulWidget {
 class _OrganizationLoginScreenState extends State<OrganizationLoginScreen> {
   @override
   Widget build(BuildContext context) {
+    final localizationProvider = Provider.of<LocalizationProvider>(context);
     return Scaffold(
       backgroundColor: Color(0xFFF9FDFA),
       body: Center(
@@ -29,7 +32,9 @@ class _OrganizationLoginScreenState extends State<OrganizationLoginScreen> {
                 height: MediaQuery.of(context).size.height * 0.01,
               ),
               Text(
-                'Login',
+                localizationProvider.locale.languageCode == 'en'
+                    ? 'Login'
+                    : 'لاگ ان',
                 style: TextStyle(fontSize: 30, fontFamily: 'semi-bold'),
               ),
               SizedBox(
@@ -37,7 +42,9 @@ class _OrganizationLoginScreenState extends State<OrganizationLoginScreen> {
               ),
               MyTextFeild(
                 prefixIcon: Icons.email,
-                hintText: 'Email',
+                hintText: localizationProvider.locale.languageCode == 'en'
+                    ? 'Email'
+                    : 'ای میل',
                 obscureText: false,
               ),
               SizedBox(
@@ -45,7 +52,9 @@ class _OrganizationLoginScreenState extends State<OrganizationLoginScreen> {
               ),
               MyTextFeild(
                 prefixIcon: Icons.email,
-                hintText: 'Password',
+                hintText: localizationProvider.locale.languageCode == 'en'
+                    ? 'Password'
+                    : 'پاس ورڈ',
                 obscureText: true,
               ),
               SizedBox(
@@ -59,11 +68,14 @@ class _OrganizationLoginScreenState extends State<OrganizationLoginScreen> {
                           builder: (context) => MainRequestsScreen()));
                 },
                 child: Text(
-                  'Login',
+                  localizationProvider.locale.languageCode == 'en'
+                      ? 'Login'
+                      : 'لاگ ان',
                   style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'semi-bold',
-                      color: Colors.white),
+                    fontSize: 20,
+                    fontFamily: 'semi-bold',
+                    color: Colors.white,
+                  ),
                 ),
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF5DCE35),
@@ -84,8 +96,12 @@ class _OrganizationLoginScreenState extends State<OrganizationLoginScreen> {
                       MaterialPageRoute(
                           builder: (context) => UserLoginScreen()));
                 },
-                child: Text('Login in as User',
-                    style: TextStyle(color: Colors.black, fontSize: 15.sp)),
+                child: Text(
+                  localizationProvider.locale.languageCode == 'en'
+                      ? 'Login in as User'
+                      : 'صارف کے طور پر لاگ ان کریں',
+                  style: TextStyle(color: Colors.black, fontSize: 15.sp),
+                ),
               )
             ],
           ),

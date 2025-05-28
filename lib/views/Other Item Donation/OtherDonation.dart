@@ -6,6 +6,7 @@ import 'package:reserve/CustomsWidgets/textfeild.dart';
 import 'package:reserve/Functions/donationServices.dart';
 import 'package:reserve/StateManagment/Donations.dart';
 import 'package:reserve/StateManagment/authProvider.dart';
+import 'package:reserve/StateManagment/localization.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class OtherItmeDonation extends StatefulWidget {
@@ -20,11 +21,17 @@ class _OtherItmeDonationState extends State<OtherItmeDonation> {
   final _productDescriptionController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final localizationProvider = Provider.of<LocalizationProvider>(context);
     final authProvider = Provider.of<AuthProvider>(context);
     final donationProvider = Provider.of<DonationProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Donate  Items', style: TextStyle(fontFamily: 'semi-bold')),
+        title: Text(
+          localizationProvider.locale.languageCode == 'en'
+              ? 'Donate Items'
+              : 'اشیاء عطیہ کریں',
+          style: const TextStyle(fontFamily: 'semi-bold'),
+        ),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -38,7 +45,9 @@ class _OtherItmeDonationState extends State<OtherItmeDonation> {
             MyTextFeild(
               controller: _productNameController,
               prefixIcon: Icons.shopping_bag,
-              hintText: 'Product Name',
+              hintText: localizationProvider.locale.languageCode == 'en'
+                  ? 'Product Name'
+                  : 'مصنوعات کا نام',
               obscureText: false,
             ),
             SizedBox(
@@ -47,7 +56,9 @@ class _OtherItmeDonationState extends State<OtherItmeDonation> {
             MyTextFeild(
               controller: _productDescriptionController,
               prefixIcon: Icons.description,
-              hintText: 'Product Description',
+              hintText: localizationProvider.locale.languageCode == 'en'
+                  ? 'Product Description'
+                  : 'مصنوعات کی وضاحت',
               obscureText: false,
             ),
             SizedBox(
@@ -70,10 +81,15 @@ class _OtherItmeDonationState extends State<OtherItmeDonation> {
             SizedBox(height: 8),
             Text(
               donationProvider.selectedImage != null
-                  ? 'Image selected'
-                  : 'Add Product Image',
+                  ? (localizationProvider.locale.languageCode == 'en'
+                      ? 'Image selected'
+                      : 'تصویر منتخب کی گئی ہے')
+                  : (localizationProvider.locale.languageCode == 'en'
+                      ? 'Add Product Image'
+                      : 'مصنوعات کی تصویر شامل کریں'),
               style: TextStyle(fontSize: 16.sp, fontFamily: 'light'),
             ),
+
             SizedBox(height: MediaQuery.of(context).size.height * 0.02),
 
             // Location Capture Button
@@ -93,8 +109,12 @@ class _OtherItmeDonationState extends State<OtherItmeDonation> {
             SizedBox(height: 8),
             Text(
               donationProvider.currentPosition != null
-                  ? 'Location captured: ${donationProvider.currentPosition!.latitude}, ${donationProvider.currentPosition!.longitude}'
-                  : 'No location captured',
+                  ? (localizationProvider.locale.languageCode == 'en'
+                      ? 'Location captured: ${donationProvider.currentPosition!.latitude}, ${donationProvider.currentPosition!.longitude}'
+                      : 'مقام حاصل کیا گیا: ${donationProvider.currentPosition!.latitude}, ${donationProvider.currentPosition!.longitude}')
+                  : (localizationProvider.locale.languageCode == 'en'
+                      ? 'No location captured'
+                      : 'کوئی مقام حاصل نہیں کیا گیا'),
               style: TextStyle(fontSize: 16.sp, fontFamily: 'light'),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.04),
@@ -160,7 +180,9 @@ class _OtherItmeDonationState extends State<OtherItmeDonation> {
               child: donationProvider.isLoading
                   ? CircularProgressIndicator(color: Colors.white)
                   : Text(
-                      'Donate',
+                      localizationProvider.locale.languageCode == 'en'
+                          ? 'Donate'
+                          : 'عطا کریں',
                       style: TextStyle(
                         fontSize: 20,
                         fontFamily: 'semi-bold',

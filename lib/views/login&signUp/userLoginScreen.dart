@@ -5,6 +5,7 @@ import 'package:reserve/CustomsWidgets/textfeild.dart';
 
 import 'package:reserve/Database/authentication.dart';
 import 'package:reserve/StateManagment/authProvider.dart';
+import 'package:reserve/StateManagment/localization.dart';
 
 import 'package:reserve/views/homeScreen.dart';
 import 'package:reserve/views/login&signUp/organizationLoginScreen.dart';
@@ -48,6 +49,7 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizationProvider = Provider.of<LocalizationProvider>(context);
     return Scaffold(
       backgroundColor: Color(0xFFF9FDFA),
       body: Center(
@@ -62,7 +64,9 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
                   height: MediaQuery.of(context).size.height * 0.01,
                 ),
                 Text(
-                  'Login',
+                  localizationProvider.locale.languageCode == 'en'
+                      ? 'Login'
+                      : 'لاگ ان',
                   style: TextStyle(fontSize: 30, fontFamily: 'semi-bold'),
                 ),
                 SizedBox(
@@ -71,7 +75,9 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
                 MyTextFeild(
                   controller: _emailController,
                   prefixIcon: Icons.person,
-                  hintText: 'Email',
+                  hintText: localizationProvider.locale.languageCode == 'en'
+                      ? 'Email'
+                      : 'ای میل',
                   obscureText: false,
                 ),
                 SizedBox(
@@ -80,7 +86,9 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
                 MyTextFeild(
                   controller: _passwordController,
                   prefixIcon: Icons.email,
-                  hintText: 'Password',
+                  hintText: localizationProvider.locale.languageCode == 'en'
+                      ? 'Password'
+                      : 'پاس ورڈ',
                   obscureText: true,
                 ),
                 SizedBox(
@@ -95,11 +103,14 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
                       child: authProvider.isLoading
                           ? CircularProgressIndicator(color: Colors.white)
                           : Text(
-                              'Login',
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontFamily: 'semi-bold',
-                                  color: Colors.white),
+                              localizationProvider.locale.languageCode == 'en'
+                                  ? 'Login'
+                                  : 'لاگ ان',
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontFamily: 'semi-bold',
+                                color: Colors.white,
+                              ),
                             ),
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFF5DCE35),
@@ -108,6 +119,38 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
                           minimumSize: Size(double.infinity, 50)),
                     );
                   },
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.02,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    localizationProvider.toggleLanguage();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF5DCE35),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    minimumSize: const Size(double.infinity, 50),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.language, color: Colors.white),
+                      const SizedBox(width: 8),
+                      Text(
+                        localizationProvider.locale.languageCode == 'en'
+                            ? 'Change Language'
+                            : 'زبان تبدیل کریں',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontFamily: 'semi-bold',
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.02,
@@ -127,9 +170,15 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Dont have an account?'),
                       Text(
-                        'Sign Up',
+                        localizationProvider.locale.languageCode == 'en'
+                            ? "Don't have an account?"
+                            : 'اکاؤنٹ نہیں ہے؟',
+                      ),
+                      Text(
+                        localizationProvider.locale.languageCode == 'en'
+                            ? 'Sign Up'
+                            : 'سائن اپ',
                         style: TextStyle(color: Colors.blue),
                       ),
                     ],
@@ -145,8 +194,12 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
                         MaterialPageRoute(
                             builder: (context) => OrganizationLoginScreen()));
                   },
-                  child: Text('Login in as organization',
-                      style: TextStyle(color: Colors.black, fontSize: 15.sp)),
+                  child: Text(
+                    localizationProvider.locale.languageCode == 'en'
+                        ? 'Login in as organization'
+                        : 'ادارہ کے طور پر لاگ ان کریں',
+                    style: TextStyle(color: Colors.black, fontSize: 15.sp),
+                  ),
                 )
               ],
             ),

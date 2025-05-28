@@ -5,6 +5,7 @@ import 'package:reserve/CustomsWidgets/textfeild.dart';
 import 'package:reserve/Functions/donationServices.dart';
 import 'package:reserve/StateManagment/Donations.dart';
 import 'package:reserve/StateManagment/authProvider.dart';
+import 'package:reserve/StateManagment/localization.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class FoodDonationScreen extends StatefulWidget {
@@ -22,12 +23,17 @@ class _FoodDonationScreenState extends State<FoodDonationScreen> {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
     final donationProvider = Provider.of<DonationProvider>(context);
+    final localizationProvider = Provider.of<LocalizationProvider>(context);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        title: const Text('Donate Food Item',
-            style: TextStyle(fontFamily: 'semi-bold')),
+        title: Text(
+          localizationProvider.locale.languageCode == 'en'
+              ? 'Donate Food Item'
+              : 'خوراکی اشیاء عطیہ کریں',
+          style: TextStyle(fontFamily: 'semi-bold'),
+        ),
         centerTitle: true,
         backgroundColor: const Color(0xFF5DCE35),
         elevation: 0,
@@ -58,12 +64,18 @@ class _FoodDonationScreenState extends State<FoodDonationScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Let’s Share the Blessings 🍱',
-                              style: TextStyle(
-                                  fontFamily: 'semi-bold', fontSize: 20)),
-                          const SizedBox(height: 10),
-                          const Text(
-                            'Fill in the food details and contribute to your community.',
+                          Text(
+                            localizationProvider.locale.languageCode == 'en'
+                                ? 'Let’s Share the Blessings 🍱'
+                                : 'آئیں رحمتیں بانٹیں 🍱',
+                            style: TextStyle(
+                                fontFamily: 'semi-bold', fontSize: 20),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            localizationProvider.locale.languageCode == 'en'
+                                ? 'Fill in the food details and contribute to your community.'
+                                : 'خوراک کی تفصیلات بھریں اور اپنی کمیونٹی میں حصہ ڈالیں۔',
                             style: TextStyle(fontFamily: 'light', fontSize: 14),
                           ),
                         ],
@@ -75,7 +87,9 @@ class _FoodDonationScreenState extends State<FoodDonationScreen> {
                     MyTextFeild(
                       controller: _productNameController,
                       prefixIcon: Icons.fastfood,
-                      hintText: 'Product Name',
+                      hintText: localizationProvider.locale.languageCode == 'en'
+                          ? 'Product Name'
+                          : 'مصنوعات کا نام',
                       obscureText: false,
                     ),
                     const SizedBox(height: 16),
@@ -84,7 +98,9 @@ class _FoodDonationScreenState extends State<FoodDonationScreen> {
                     MyTextFeild(
                       controller: _productDescriptionController,
                       prefixIcon: Icons.description,
-                      hintText: 'Product Description',
+                      hintText: localizationProvider.locale.languageCode == 'en'
+                          ? 'Product Description'
+                          : 'مصنوعات کی تفصیل',
                       obscureText: false,
                     ),
                     const SizedBox(height: 16),
@@ -107,9 +123,13 @@ class _FoodDonationScreenState extends State<FoodDonationScreen> {
                                 color: Color(0xFF5DCE35)),
                             const SizedBox(width: 10),
                             Text(
-                              donationProvider.selectedImage != null
-                                  ? 'Image Selected'
-                                  : 'Add Product Image',
+                              localizationProvider.locale.languageCode == 'en'
+                                  ? (donationProvider.selectedImage != null
+                                      ? 'Image Selected'
+                                      : 'Add Product Image')
+                                  : (donationProvider.selectedImage != null
+                                      ? 'تصویر منتخب ہے'
+                                      : 'مصنوعات کی تصویر شامل کریں'),
                               style: const TextStyle(
                                   fontSize: 16, fontFamily: 'light'),
                             ),
@@ -137,9 +157,13 @@ class _FoodDonationScreenState extends State<FoodDonationScreen> {
                                 color: Color(0xFF5DCE35)),
                             const SizedBox(width: 10),
                             Text(
-                              donationProvider.currentPosition != null
-                                  ? 'Location Captured'
-                                  : 'Capture Location',
+                              localizationProvider.locale.languageCode == 'en'
+                                  ? (donationProvider.currentPosition != null
+                                      ? 'Location Captured'
+                                      : 'Capture Location')
+                                  : (donationProvider.currentPosition != null
+                                      ? 'مقام حاصل کر لیا گیا ہے'
+                                      : 'مقام حاصل کریں'),
                               style: const TextStyle(
                                   fontSize: 16, fontFamily: 'light'),
                             ),
@@ -151,8 +175,7 @@ class _FoodDonationScreenState extends State<FoodDonationScreen> {
                     if (donationProvider.currentPosition != null)
                       Text(
                         '${donationProvider.currentPosition!.latitude}, ${donationProvider.currentPosition!.longitude}',
-                        style:
-                            const TextStyle(fontSize: 14, fontFamily: 'light'),
+                        style: TextStyle(fontSize: 14, fontFamily: 'light'),
                       ),
 
                     const SizedBox(height: 30),
@@ -166,9 +189,12 @@ class _FoodDonationScreenState extends State<FoodDonationScreen> {
                             donationProvider.currentPosition == null ||
                             donationProvider.currentAddress == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
+                            SnackBar(
                               content: Text(
-                                  'Please fill all fields, pick image, and capture location.'),
+                                localizationProvider.locale.languageCode == 'en'
+                                    ? 'Please fill all fields, pick image, and capture location.'
+                                    : 'براہ کرم تمام فیلڈز پُر کریں، تصویر منتخب کریں، اور مقام حاصل کریں۔',
+                              ),
                             ),
                           );
                           return;
@@ -200,8 +226,13 @@ class _FoodDonationScreenState extends State<FoodDonationScreen> {
                           );
 
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Donation added successfully!')),
+                            SnackBar(
+                              content: Text(
+                                localizationProvider.locale.languageCode == 'en'
+                                    ? 'Donation added successfully!'
+                                    : 'عطیہ کامیابی سے شامل کر دیا گیا ہے!',
+                              ),
+                            ),
                           );
 
                           donationProvider.clear();
@@ -224,14 +255,18 @@ class _FoodDonationScreenState extends State<FoodDonationScreen> {
                           ? const CircularProgressIndicator(
                               color: Colors.white,
                             )
-                          : const Text(
-                              'Donate',
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontFamily: 'semi-bold',
-                                  color: Colors.white),
+                          : Text(
+                              localizationProvider.locale.languageCode == 'en'
+                                  ? 'Donate'
+                                  : 'عطیہ کریں',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontFamily: 'semi-bold',
+                                color: Colors.white,
+                              ),
                             ),
                     ),
+
                     const SizedBox(height: 20),
                   ],
                 ),

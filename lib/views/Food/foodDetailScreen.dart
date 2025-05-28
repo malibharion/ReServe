@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:reserve/Functions/locationEnabler.dart';
 import 'package:reserve/Model/donation.dart';
 import 'package:reserve/StateManagment/Donations.dart';
+import 'package:reserve/StateManagment/localization.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class FoodDetailScreen extends StatefulWidget {
@@ -19,6 +20,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final donationProvider = Provider.of<DonationProvider>(context);
+    final localizationProvider = Provider.of<LocalizationProvider>(context);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF6F9F2),
@@ -70,17 +72,23 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                         fontFamily: 'semi-bold',
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    const Text(
-                      'Description',
+                    SizedBox(height: 12),
+                    Text(
+                      localizationProvider.locale.languageCode == 'en'
+                          ? 'Description'
+                          : 'تفصیل',
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                     ),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6),
                     Text(
-                      widget.donation.productDescription.isNotEmpty
-                          ? widget.donation.productDescription
-                          : 'No description provided.',
+                      localizationProvider.locale.languageCode == 'en'
+                          ? (widget.donation.productDescription.isNotEmpty
+                              ? widget.donation.productDescription
+                              : 'No description provided.')
+                          : (widget.donation.productDescription.isNotEmpty
+                              ? widget.donation.productDescription
+                              : 'کوئی تفصیل فراہم نہیں کی گئی۔'),
                       style:
                           const TextStyle(fontSize: 15, color: Colors.black87),
                     ),
@@ -89,8 +97,10 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Donated by',
+                          Text(
+                            localizationProvider.locale.languageCode == 'en'
+                                ? 'Donated by'
+                                : 'فراہم کنندہ',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.w600),
                           ),
@@ -128,6 +138,8 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                     if (address == null) return;
 
                     await donationProvider.requestDonation(
+                      latitude: position.latitude.toString(),
+                      longitude: position.longitude.toString(),
                       isFood: true,
                       donationId: widget.donation.id,
                       requesterId: userId,
@@ -157,8 +169,10 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                   elevation: 5,
                 ),
                 icon: const Icon(Icons.request_page_rounded),
-                label: const Text(
-                  'Request',
+                label: Text(
+                  localizationProvider.locale.languageCode == 'en'
+                      ? 'Request'
+                      : 'درخواست',
                   style: TextStyle(fontSize: 18, fontFamily: 'semi-bold'),
                 ),
               ),

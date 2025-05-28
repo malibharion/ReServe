@@ -147,6 +147,8 @@ class DonationProvider with ChangeNotifier {
   //--------------------
 
   Future<void> requestDonation({
+    required String latitude,
+    required String longitude,
     required bool isFood,
     required String donationId,
     required String requesterId,
@@ -160,6 +162,8 @@ class DonationProvider with ChangeNotifier {
       notifyListeners();
 
       await _supabase.from('donation_requests').insert({
+        'latitude': latitude,
+        'longitude': longitude,
         'isFood': isFood,
         'donation_id': donationId,
         'requester_id': requesterId,

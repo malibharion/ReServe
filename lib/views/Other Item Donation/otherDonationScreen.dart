@@ -5,6 +5,7 @@ import 'package:reserve/Functions/locationEnabler.dart';
 import 'package:reserve/Model/donation.dart';
 import 'package:reserve/Model/otherDonationModel.dart';
 import 'package:reserve/StateManagment/Donations.dart';
+import 'package:reserve/StateManagment/localization.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class OtherItmeDonationDetailScreen extends StatefulWidget {
@@ -20,6 +21,7 @@ class _OtherItmeDonationDetailScreenState
     extends State<OtherItmeDonationDetailScreen> {
   @override
   Widget build(BuildContext context) {
+    final localizationProvider = Provider.of<LocalizationProvider>(context);
     final donationProvider = Provider.of<DonationProvider>(context);
     final SupabaseClient _supabase = Supabase.instance.client;
     return Scaffold(
@@ -40,8 +42,10 @@ class _OtherItmeDonationDetailScreenState
               ),
               const SizedBox(height: 20),
               const SizedBox(height: 20),
-              const Text(
-                'Description',
+              Text(
+                localizationProvider.locale.languageCode == 'en'
+                    ? 'Description'
+                    : 'تفصیل',
                 style: TextStyle(fontFamily: 'semi-bold', fontSize: 20),
               ),
               Text(
@@ -52,8 +56,10 @@ class _OtherItmeDonationDetailScreenState
               ),
               if (widget.donation.username != null) ...[
                 const SizedBox(height: 20),
-                const Text(
-                  'Donated by',
+                Text(
+                  localizationProvider.locale.languageCode == 'en'
+                      ? 'Donated by'
+                      : 'عطا کردہ',
                   style: TextStyle(fontFamily: 'semi-bold', fontSize: 20),
                 ),
                 Text(
@@ -108,8 +114,10 @@ class _OtherItmeDonationDetailScreenState
                       );
                     }
                   },
-                  child: const Text(
-                    'Request',
+                  child: Text(
+                    localizationProvider.locale.languageCode == 'en'
+                        ? 'Request'
+                        : 'درخواست',
                     style: TextStyle(
                         fontSize: 20,
                         fontFamily: 'semi-bold',

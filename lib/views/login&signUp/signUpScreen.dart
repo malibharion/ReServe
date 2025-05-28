@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:reserve/CustomsWidgets/textfeild.dart';
 
 import 'package:reserve/Database/authentication.dart';
+import 'package:reserve/StateManagment/localization.dart';
 import 'package:reserve/views/homeScreen.dart';
 import 'package:reserve/views/login&signUp/userLoginScreen.dart';
 
@@ -21,6 +23,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final localizationProvider = Provider.of<LocalizationProvider>(context);
     return Scaffold(
       backgroundColor: Color(0xFFF9FDFA),
       body: Center(
@@ -35,7 +38,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: MediaQuery.of(context).size.height * 0.01,
                 ),
                 Text(
-                  'Sign Up',
+                  localizationProvider.locale.languageCode == 'en'
+                      ? 'Sign Up'
+                      : 'سائن اپ',
                   style: TextStyle(fontSize: 30, fontFamily: 'semi-bold'),
                 ),
                 SizedBox(
@@ -44,7 +49,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 MyTextFeild(
                   controller: _usernameController,
                   prefixIcon: Icons.person,
-                  hintText: 'User Name',
+                  hintText: localizationProvider.locale.languageCode == 'en'
+                      ? 'User Name'
+                      : 'یوزر نیم',
                   obscureText: false,
                 ),
                 SizedBox(
@@ -53,7 +60,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 MyTextFeild(
                   controller: _emailController,
                   prefixIcon: Icons.email,
-                  hintText: 'Email',
+                  hintText: localizationProvider.locale.languageCode == 'en'
+                      ? 'Email'
+                      : 'ای میل',
                   obscureText: false,
                 ),
                 SizedBox(
@@ -62,7 +71,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 MyTextFeild(
                   controller: _mobileNumberController,
                   prefixIcon: Icons.mobile_friendly,
-                  hintText: 'Mobile Number',
+                  hintText: localizationProvider.locale.languageCode == 'en'
+                      ? 'Mobile Number'
+                      : 'موبائل نمبر',
                   obscureText: false,
                 ),
                 SizedBox(
@@ -71,7 +82,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 MyTextFeild(
                   controller: _cinicController,
                   prefixIcon: Icons.perm_identity,
-                  hintText: 'CNIC',
+                  hintText: localizationProvider.locale.languageCode == 'en'
+                      ? 'CNIC'
+                      : 'شناختی کارڈ',
                   obscureText: false,
                 ),
                 SizedBox(
@@ -80,7 +93,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 MyTextFeild(
                   controller: _passwordController,
                   prefixIcon: Icons.email,
-                  hintText: 'Password',
+                  hintText: localizationProvider.locale.languageCode == 'en'
+                      ? 'Password'
+                      : 'پاس ورڈ',
                   obscureText: true,
                 ),
                 SizedBox(
@@ -112,11 +127,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     );
                   },
                   child: Text(
-                    'Sign Up',
+                    localizationProvider.locale.languageCode == 'en'
+                        ? 'Sign Up'
+                        : 'سائن اپ',
                     style: TextStyle(
-                        fontSize: 20,
-                        fontFamily: 'semi-bold',
-                        color: Colors.white),
+                      fontSize: 20,
+                      fontFamily: 'semi-bold',
+                      color: Colors.white,
+                    ),
                   ),
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF5DCE35),
@@ -139,9 +157,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Already have an account?'),
                       Text(
-                        'Log In',
+                        localizationProvider.locale.languageCode == 'en'
+                            ? 'Already have an account?'
+                            : 'کیا آپ کے پاس پہلے سے اکاؤنٹ ہے؟',
+                      ),
+                      Text(
+                        localizationProvider.locale.languageCode == 'en'
+                            ? 'Log In'
+                            : 'لاگ ان',
                         style: TextStyle(color: Colors.blue),
                       ),
                     ],

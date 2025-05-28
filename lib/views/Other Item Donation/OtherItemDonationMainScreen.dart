@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reserve/CustomsWidgets/donationContainer.dart';
 import 'package:reserve/StateManagment/Donations.dart';
+import 'package:reserve/StateManagment/localization.dart';
 
 import 'package:reserve/views/Other%20Item%20Donation/OtherDonation.dart';
 import 'package:reserve/views/Other%20Item%20Donation/otherDonationScreen.dart';
@@ -27,11 +28,14 @@ class _OtherItmeDonationScreenMainState
   @override
   Widget build(BuildContext context) {
     final donationProvider = Provider.of<DonationProvider>(context);
+    final localizationProvider = Provider.of<LocalizationProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Other Donations',
+        title: Text(
+          localizationProvider.locale.languageCode == 'en'
+              ? 'Other Donations'
+              : 'دیگر عطیات',
           style: TextStyle(
             fontFamily: 'Poppins',
             fontWeight: FontWeight.bold,
@@ -86,8 +90,10 @@ class _OtherItmeDonationScreenMainState
           Navigator.push(context,
               MaterialPageRoute(builder: (_) => const OtherItmeDonation()));
         },
-        label: const Text(
-          'Donate',
+        label: Text(
+          localizationProvider.locale.languageCode == 'en'
+              ? 'Donate'
+              : 'عطا کریں',
           style: TextStyle(fontFamily: 'Poppins', color: Colors.white),
         ),
         icon: const Icon(Icons.volunteer_activism, color: Colors.white),

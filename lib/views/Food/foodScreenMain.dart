@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reserve/CustomsWidgets/donationContainer.dart';
 import 'package:reserve/StateManagment/Donations.dart';
+import 'package:reserve/StateManagment/localization.dart';
 
 import 'package:reserve/views/Food/foodDetailScreen.dart';
 import 'package:reserve/views/Food/foodDonationScreen.dart';
@@ -25,11 +26,14 @@ class _FoodScreenMainState extends State<FoodScreenMain> {
   @override
   Widget build(BuildContext context) {
     final donationProvider = Provider.of<DonationProvider>(context);
+    final localizationProvider = Provider.of<LocalizationProvider>(context);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF6FFF2),
       appBar: AppBar(
-        title: const Text('Food'),
+        title: Text(
+          localizationProvider.locale.languageCode == 'en' ? 'Food' : 'خوراک',
+        ),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -80,9 +84,11 @@ class _FoodScreenMainState extends State<FoodScreenMain> {
             return const FoodDonationScreen();
           }));
         },
-        label: const Text(
-          'Donate',
-          style: TextStyle(color: Colors.white),
+        label: Text(
+          localizationProvider.locale.languageCode == 'en'
+              ? 'Donate'
+              : 'عطیہ کریں',
+          style: const TextStyle(color: Colors.white),
         ),
         icon: const Icon(
           Icons.volunteer_activism,
