@@ -154,6 +154,7 @@ class _OtherItmeDonationState extends State<OtherItmeDonation> {
                     imageUrl: imageUrl,
                     latitude: position.latitude,
                     longitude: position.longitude,
+                    status: 'Pending',
                     city: address['city'] ?? '',
                     area: address['area'] ?? '',
                     province: address['province'] ?? '',

@@ -24,6 +24,7 @@ class DonationService {
 
   //Other Donations
   Future<void> otherItems({
+    required String status,
     required String productName,
     required String productDescription,
     required String imageUrl,
@@ -50,6 +51,7 @@ class DonationService {
       'city': city,
       'area': area,
       'province': province,
+      'status': status,
       'country': country,
       'image_path': imageUrl,
       'user_id': userId,
@@ -60,6 +62,7 @@ class DonationService {
 
 //Food Donations
   Future<void> donateFoodItem({
+    required String status,
     required String productName,
     required String productDescription,
     required String imageUrl,
@@ -86,6 +89,7 @@ class DonationService {
       'city': city,
       'area': area,
       'province': province,
+      'status': status,
       'country': country,
       'image_path': imageUrl,
       'user_id': userId,
@@ -106,6 +110,7 @@ class DonationService {
   Future<void> requestDonation({
     required String donationId,
     required String requesterId,
+    required String status,
     required String city,
     required String area,
     required String province,
@@ -116,6 +121,7 @@ class DonationService {
       'requester_id': requesterId,
       'city': city,
       'area': area,
+      'status': status,
       'province': province,
       'country': country,
     });
@@ -125,6 +131,7 @@ class DonationService {
     required String donationId,
     required String requesterId,
     required String city,
+    required String status,
     required String area,
     required String province,
     required String country,
@@ -132,6 +139,7 @@ class DonationService {
     await supabase.from('other_donation_request').insert({
       'donation_id': donationId,
       'requester_id': requesterId,
+      'status': status,
       'city': city,
       'area': area,
       'province': province,

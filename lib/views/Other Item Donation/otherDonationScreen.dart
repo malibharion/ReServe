@@ -97,6 +97,7 @@ class _OtherItmeDonationDetailScreenState
                         isFood: false,
                         donationId: widget.donation.id,
                         requesterId: userId,
+                        status: 'Pending',
                         city: address['city'] ?? 'Unknown',
                         area: address['area'] ?? 'Unknown',
                         province: address['province'] ?? 'Unknown',

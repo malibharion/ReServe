@@ -51,6 +51,7 @@ class StudentHelpProvider with ChangeNotifier {
   }
 
   Future<void> submitHelpRequest({
+    required String status,
     required String name,
     required String fatherName,
     required Uint8List? feeSlipImage,
@@ -78,7 +79,7 @@ class StudentHelpProvider with ChangeNotifier {
         'father_name': fatherName,
         'fee_slip_url': feeSlipUrl,
         'cnic_url': cnicUrl,
-        'status': 'Pending',
+        'status': status,
       });
 
       // Refresh data

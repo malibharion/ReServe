@@ -215,6 +215,7 @@ class _FoodDonationScreenState extends State<FoodDonationScreen> {
                                 _productDescriptionController.text,
                             imageUrl: imageUrl,
                             latitude: position.latitude,
+                            status: 'Pending',
                             longitude: position.longitude,
                             city: address['city'] ?? '',
                             area: address['area'] ?? '',

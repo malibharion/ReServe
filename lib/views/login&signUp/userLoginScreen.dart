@@ -123,38 +123,6 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.02,
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    localizationProvider.toggleLanguage();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF5DCE35),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    minimumSize: const Size(double.infinity, 50),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.language, color: Colors.white),
-                      const SizedBox(width: 8),
-                      Text(
-                        localizationProvider.locale.languageCode == 'en'
-                            ? 'Change Language'
-                            : 'زبان تبدیل کریں',
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontFamily: 'semi-bold',
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.02,
-                ),
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.02,
                 ),

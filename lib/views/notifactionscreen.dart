@@ -1,97 +1,105 @@
 import 'package:flutter/material.dart';
-import 'package:reserve/Functions/notification.dart';
+import 'package:reserve/Functions/statusFunction.dart';
+import 'package:reserve/Model/donationStatus.dart';
 
-class DonationNotificationScreen extends StatefulWidget {
+class DonationStatusScreen extends StatefulWidget {
+  final String userId; // Pass current user id
+
+  DonationStatusScreen({required this.userId});
+
   @override
-  _DonationNotificationScreenState createState() =>
-      _DonationNotificationScreenState();
+  _DonationStatusScreenState createState() => _DonationStatusScreenState();
 }
 
-class _DonationNotificationScreenState
-    extends State<DonationNotificationScreen> {
-  List<Map<String, dynamic>> _donations = [];
+class _DonationStatusScreenState extends State<DonationStatusScreen> {
+  late Future<List<DonationStatus>> _statusesFuture;
 
   @override
   void initState() {
     super.initState();
-    setupDonationListener((newDonation) {
-      setState(() {
-        _donations.insert(0, newDonation);
-      });
-    });
+    print(
+        "[initState] Starting to fetch statuses for userId: ${widget.userId}");
+    _statusesFuture = fetchUserStatuses(widget.userId);
   }
 
   @override
   Widget build(BuildContext context) {
+    print("[build] Building DonationStatusScreen");
     return Scaffold(
-      backgroundColor: Color(0xfff0f4f8),
-      appBar: AppBar(
-        title: Text("📢 New Donations",
-            style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.blueAccent,
-        elevation: 4,
-      ),
-      body: _donations.isEmpty
-          ? Center(
-              child: Text(
-                "No new donations yet!",
-                style: TextStyle(fontSize: 18, color: Colors.grey),
-              ),
-            )
-          : ListView.separated(
-              padding: EdgeInsets.all(16),
-              itemCount: _donations.length,
-              separatorBuilder: (_, __) => SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                final donation = _donations[index];
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 10,
-                        offset: Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        donation['product_name'] ?? 'No Name',
+      appBar: AppBar(title: Text('My Donation & Requests Status')),
+      body: FutureBuilder<List<DonationStatus>>(
+        future: _statusesFuture,
+        builder: (context, snapshot) {
+          print(
+              "[FutureBuilder] Connection state: ${snapshot.connectionState}");
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            print("[FutureBuilder] Waiting for data...");
+            return Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            print("[FutureBuilder] Error occurred: ${snapshot.error}");
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          final statuses = snapshot.data ?? [];
+          print("[FutureBuilder] Data received: ${statuses.length} items");
+
+          if (statuses.isEmpty) {
+            print("[FutureBuilder] No donation or request data found.");
+            return Center(child: Text('No donation or request data found.'));
+          }
+
+          return ListView.separated(
+            padding: EdgeInsets.all(16),
+            itemCount: statuses.length,
+            separatorBuilder: (_, __) => SizedBox(height: 12),
+            itemBuilder: (context, index) {
+              final item = statuses[index];
+              print("[ListView] Rendering item #$index: ${item.name}");
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8)],
+                ),
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(item.type,
                         style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blueAccent,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.blueAccent)),
+                    SizedBox(height: 6),
+                    Text(item.name,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18)),
+                    SizedBox(height: 6),
+                    Text(item.description),
+                    SizedBox(height: 6),
+                    Text('Status: ${item.status}',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, color: Colors.green)),
+                    if (item.imageUrl != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(item.imageUrl!,
+                              height: 150,
+                              width: double.infinity,
+                              fit: BoxFit.cover),
                         ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(donation['product_description'] ?? 'No Description'),
-                      SizedBox(height: 8),
-                      Text(
-                        'City: ${donation['city'] ?? '-'} | Province: ${donation['province'] ?? '-'}',
-                        style: TextStyle(color: Colors.grey[600]),
-                      ),
-                      SizedBox(height: 8),
-                      donation['image_path'] != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.network(
-                                donation['image_path'],
-                                height: 150,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                          : SizedBox(),
-                    ],
-                  ),
-                );
-              },
-            ),
+                      )
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

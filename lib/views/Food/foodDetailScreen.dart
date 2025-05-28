@@ -142,6 +142,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                       longitude: position.longitude.toString(),
                       isFood: true,
                       donationId: widget.donation.id,
+                      status: 'pending',
                       requesterId: userId,
                       city: address['city'] ?? 'Unknown',
                       area: address['area'] ?? 'Unknown',

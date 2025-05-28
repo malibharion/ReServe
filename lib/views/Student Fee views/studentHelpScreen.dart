@@ -58,6 +58,7 @@ class _StudentHelpScreenState extends State<StudentHelpScreen> {
       final provider = Provider.of<StudentHelpProvider>(context, listen: false);
       await provider.submitHelpRequest(
         name: _nameController.text,
+        status: 'Pending',
         fatherName: _fatherNameController.text,
         feeSlipImage: await _feeSlipImage!.readAsBytes(),
         cnicImage: await _cnicImage!.readAsBytes(),
