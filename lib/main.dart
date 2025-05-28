@@ -51,6 +51,7 @@ class MyApp extends StatelessWidget {
         ],
         themeMode: themeProvider.themeMode,
         theme: ThemeData.light(),
+        debugShowCheckedModeBanner: false,
         darkTheme: ThemeData.dark(),
         home: UserLoginScreen(),
       ),

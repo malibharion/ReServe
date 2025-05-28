@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:reserve/CustomsWidgets/studentFeeContainer.dart';
+import 'package:reserve/StateManagment/localization.dart';
 import 'package:reserve/views/Student%20Fee%20views/studentFeeDonationScreen.dart';
 import 'package:reserve/views/Student%20Fee%20views/studentHelpScreen.dart';
 
@@ -13,6 +15,7 @@ class StudentFeeMain extends StatefulWidget {
 class _StudentFeeMainState extends State<StudentFeeMain> {
   @override
   Widget build(BuildContext context) {
+    final localizationProvider = Provider.of<LocalizationProvider>(context);
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
@@ -24,7 +27,6 @@ class _StudentFeeMainState extends State<StudentFeeMain> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header with Image
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -47,7 +49,9 @@ class _StudentFeeMainState extends State<StudentFeeMain> {
               // Title
               Center(
                 child: Text(
-                  'Empower a Future with Education',
+                  localizationProvider.locale.languageCode == 'en'
+                      ? 'Empower a Future with Education'
+                      : 'تعلیم کے ذریعے مستقبل کو بااختیار بنائیں',
                   style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w600,
@@ -58,9 +62,10 @@ class _StudentFeeMainState extends State<StudentFeeMain> {
               ),
               const SizedBox(height: 20),
 
-              // Description Title
-              const Text(
-                'Why We Do This?',
+              Text(
+                localizationProvider.locale.languageCode == 'en'
+                    ? 'Why We Do This?'
+                    : 'ہم یہ کیوں کرتے ہیں؟',
                 style: TextStyle(
                   fontSize: 18,
                   fontFamily: 'semi-bold',
@@ -68,11 +73,14 @@ class _StudentFeeMainState extends State<StudentFeeMain> {
               ),
               const SizedBox(height: 10),
 
-              // Description
-              const Text(
-                'Education is a basic right, yet many students struggle due to financial limitations. '
-                'We’re committed to bridging this gap by offering support to those in need. '
-                'Be a hero in someone’s life today — your help can change their tomorrow.',
+              Text(
+                localizationProvider.locale.languageCode == 'en'
+                    ? 'Education is a basic right, yet many students struggle due to financial limitations. '
+                        'We are committed to bridging this gap by offering support to those in need. '
+                        'Be a hero in someone life today — your help can change their tomorrow.'
+                    : 'تعلیم ایک بنیادی حق ہے، لیکن مالی مشکلات کی وجہ سے بہت سے طلباء کو جدوجہد کرنی پڑتی ہے۔ '
+                        'ہم اس خلا کو پُر کرنے کے لیے پرعزم ہیں اور ضرورت مندوں کی مدد کرتے ہیں۔ '
+                        'آج کسی کی زندگی کے ہیرو بنیں — آپ کی مدد ان کا کل بدل سکتی ہے۔',
                 style: TextStyle(
                   fontSize: 15,
                   fontFamily: 'regular',
@@ -92,8 +100,10 @@ class _StudentFeeMainState extends State<StudentFeeMain> {
                   );
                 },
                 icon: const Icon(Icons.volunteer_activism, color: Colors.white),
-                label: const Text(
-                  'Donate Now',
+                label: Text(
+                  localizationProvider.locale.languageCode == 'en'
+                      ? 'Donate Now'
+                      : 'ابھی عطیہ کریں',
                   style: TextStyle(
                     fontSize: 18,
                     fontFamily: 'semi-bold',
@@ -121,8 +131,10 @@ class _StudentFeeMainState extends State<StudentFeeMain> {
                   );
                 },
                 icon: const Icon(Icons.help_outline, color: Color(0xFF5DCE35)),
-                label: const Text(
-                  'Request Help',
+                label: Text(
+                  localizationProvider.locale.languageCode == 'en'
+                      ? 'Request Help'
+                      : 'مدد کی درخواست کریں',
                   style: TextStyle(
                     fontSize: 18,
                     fontFamily: 'semi-bold',

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:reserve/CustomsWidgets/textfeild.dart';
+import 'package:reserve/StateManagment/localization.dart';
 import 'package:reserve/StateManagment/studentHelpProvider.dart';
 
 class StudentHelpScreen extends StatefulWidget {
@@ -88,14 +89,22 @@ class _StudentHelpScreenState extends State<StudentHelpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizationProvider = Provider.of<LocalizationProvider>(context);
     final themeGreen = const Color(0xFF5DCE35);
     final gradientColors = [Color(0xFF5DCE35), Color(0xFF0ABF53)];
 
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-        title: const Text('Student Help Request',
-            style: TextStyle(fontFamily: 'semi-bold', fontSize: 20)),
+        title: Text(
+          localizationProvider.locale.languageCode == 'en'
+              ? 'Student Help Request'
+              : 'طالب علم کی مدد کی درخواست',
+          style: TextStyle(
+            fontFamily: 'semi-bold',
+            fontSize: 20,
+          ),
+        ),
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -116,14 +125,18 @@ class _StudentHelpScreenState extends State<StudentHelpScreen> {
               _buildCardForm(themeGreen),
               const SizedBox(height: 20),
               _buildImageUploadButton(
-                title: 'Upload Fee Slip',
+                title: localizationProvider.locale.languageCode == 'en'
+                    ? 'Upload Fee Slip'
+                    : 'فیس سلپ اپ لوڈ کریں',
                 imageFile: _feeSlipImage,
                 onTap: () => _pickImage(true),
                 themeColor: themeGreen,
               ),
               const SizedBox(height: 16),
               _buildImageUploadButton(
-                title: 'Upload CNIC',
+                title: localizationProvider.locale.languageCode == 'en'
+                    ? 'Upload CNIC'
+                    : 'شناختی کارڈ اپ لوڈ کریں',
                 imageFile: _cnicImage,
                 onTap: () => _pickImage(false),
                 themeColor: themeGreen,
@@ -138,6 +151,7 @@ class _StudentHelpScreenState extends State<StudentHelpScreen> {
   }
 
   Widget _buildCardForm(Color themeGreen) {
+    final localizationProvider = Provider.of<LocalizationProvider>(context);
     return Card(
       elevation: 8,
       shadowColor: Colors.black12,
@@ -149,14 +163,18 @@ class _StudentHelpScreenState extends State<StudentHelpScreen> {
             MyTextFeild(
               controller: _nameController,
               prefixIcon: Icons.person,
-              hintText: 'Student Name',
+              hintText: localizationProvider.locale.languageCode == 'en'
+                  ? 'Student Name'
+                  : 'طالب علم کا نام',
               obscureText: false,
             ),
             const SizedBox(height: 20),
             MyTextFeild(
               controller: _fatherNameController,
               prefixIcon: Icons.badge_outlined,
-              hintText: 'Father\'s Name',
+              hintText: localizationProvider.locale.languageCode == 'en'
+                  ? 'Father\'s Name'
+                  : 'والد کا نام',
               obscureText: false,
             ),
           ],
@@ -166,6 +184,7 @@ class _StudentHelpScreenState extends State<StudentHelpScreen> {
   }
 
   Widget _buildSubmitButton(List<Color> gradientColors) {
+    final localizationProvider = Provider.of<LocalizationProvider>(context);
     return Container(
       width: double.infinity,
       height: 52,
@@ -178,8 +197,10 @@ class _StudentHelpScreenState extends State<StudentHelpScreen> {
       child: ElevatedButton.icon(
         onPressed: _submitRequest,
         icon: const Icon(Icons.send, color: Colors.white),
-        label: const Text(
-          'Submit Request',
+        label: Text(
+          localizationProvider.locale.languageCode == 'en'
+              ? 'Submit Request'
+              : 'درخواست جمع کروائیں',
           style: TextStyle(
             fontSize: 17,
             fontFamily: 'semi-bold',

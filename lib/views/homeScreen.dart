@@ -6,12 +6,14 @@ import 'package:provider/provider.dart';
 import 'package:reserve/CustomsWidgets/homeContainer1.dart';
 import 'package:reserve/CustomsWidgets/homeContainer2.dart';
 import 'package:reserve/CustomsWidgets/homeNavigationContainer.dart';
+import 'package:reserve/StateManagment/localization.dart';
 import 'package:reserve/StateManagment/themechnager.dart';
 import 'package:reserve/views/Food/foodDonationScreen.dart';
 import 'package:reserve/views/Food/foodScreenMain.dart';
 import 'package:reserve/views/Other%20Item%20Donation/OtherItemDonationMainScreen.dart';
 import 'package:reserve/views/Student%20Fee%20views/studentFeeMain.dart';
 import 'package:reserve/views/login&signUp/userLoginScreen.dart';
+import 'package:reserve/views/notifactionscreen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,7 +26,19 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final localizationProvider = Provider.of<LocalizationProvider>(context);
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          GestureDetector(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return DonationNotificationScreen();
+                }));
+              },
+              child: Icon(Icons.notifications)),
+        ],
+      ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -33,7 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               SizedBox(height: 30.h),
               HomeScreenContainerName(
-                name: 'User',
+                name: localizationProvider.locale.languageCode == 'en'
+                    ? 'User'
+                    : 'صارف',
                 image: const AssetImage('assets/images/userPf.png'),
               ),
               SizedBox(height: 35.h),
@@ -48,7 +64,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       }));
                     },
                     child: HomeNavigationContainer(
-                      name: 'Education',
+                      name: localizationProvider.locale.languageCode == 'en'
+                          ? 'Education'
+                          : 'تعلیم',
                       image:
                           const AssetImage('assets/images/educationLogo.png'),
                     ),
@@ -61,7 +79,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       }));
                     },
                     child: HomeNavigationContainer(
-                      name: 'Food',
+                      name: localizationProvider.locale.languageCode == 'en'
+                          ? 'Food'
+                          : 'خوراک',
                       image: const AssetImage('assets/images/foodLogo.png'),
                     ),
                   ),
@@ -73,7 +93,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       }));
                     },
                     child: HomeNavigationContainer(
-                      name: 'Donation',
+                      name: localizationProvider.locale.languageCode == 'en'
+                          ? 'Donation'
+                          : 'عطیہ',
                       image: const AssetImage('assets/images/DonationLogo.png'),
                     ),
                   ),
@@ -81,7 +103,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: 40.h),
               HomeContainer2(
-                text: "Come and Join us",
+                text: localizationProvider.locale.languageCode == 'en'
+                    ? "Come and Join us"
+                    : "آئیں اور ہمارا حصہ بنیں",
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return FoodDonationScreen();
@@ -91,7 +115,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: 20.h),
               HomeContainer2(
-                text: "Come and Join us",
+                text: localizationProvider.locale.languageCode == 'en'
+                    ? "Come and Join us"
+                    : "آئیں اور ہمارا حصہ بنیں",
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return StudentFeeMain();
@@ -115,7 +141,9 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           SpeedDialChild(
             child: const Icon(Icons.dark_mode),
-            label: 'Dark Mode',
+            label: localizationProvider.locale.languageCode == 'en'
+                ? 'Dark Mode'
+                : 'ڈارک موڈ',
             onTap: () {
               final themeProvider =
                   Provider.of<ThemeProvider>(context, listen: false);
@@ -124,7 +152,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           SpeedDialChild(
             child: const Icon(Icons.logout),
-            label: 'Logout',
+            label: localizationProvider.locale.languageCode == 'en'
+                ? 'Logout'
+                : 'لاگ آؤٹ',
             onTap: () async {
               final supabase = Supabase.instance.client;
 

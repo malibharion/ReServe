@@ -1,7 +1,9 @@
 // screens/student_fee_donation_screen.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:reserve/CustomsWidgets/studentFeeContainer.dart';
 import 'package:reserve/CustomsWidgets/textfeild.dart';
+import 'package:reserve/StateManagment/localization.dart';
 
 class StudentFeeDonationScreen extends StatefulWidget {
   const StudentFeeDonationScreen({super.key});
@@ -57,6 +59,7 @@ class _StudentFeeDonationScreenState extends State<StudentFeeDonationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizationProvider = Provider.of<LocalizationProvider>(context);
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -69,30 +72,38 @@ class _StudentFeeDonationScreenState extends State<StudentFeeDonationScreen> {
                   image: const AssetImage('assets/images/kidEducation.png'),
                 ),
                 const SizedBox(height: 20),
-                const Text(
-                  'Help Students to get better education',
+                Text(
+                  localizationProvider.locale.languageCode == 'en'
+                      ? 'Help Students to get better education'
+                      : 'طالب علموں کو بہتر تعلیم حاصل کرنے میں مدد کریں',
                   style: TextStyle(fontFamily: 'semi-bold', fontSize: 20),
                 ),
                 const SizedBox(height: 20),
                 MyTextFeild(
                   controller: _nameController,
                   prefixIcon: Icons.person,
-                  hintText: 'Enter Your Name',
+                  hintText: localizationProvider.locale.languageCode == 'en'
+                      ? 'Enter Your Name'
+                      : 'اپنا نام درج کریں',
                   obscureText: false,
                 ),
                 const SizedBox(height: 20),
                 MyTextFeild(
                   controller: _amountController,
                   prefixIcon: Icons.money,
-                  hintText: 'Enter amount',
+                  hintText: localizationProvider.locale.languageCode == 'en'
+                      ? 'Enter amount'
+                      : 'رقم درج کریں',
                   obscureText: false,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 20, top: 20),
                   child: ElevatedButton(
                     onPressed: _submitDonation,
-                    child: const Text(
-                      'Donate',
+                    child: Text(
+                      localizationProvider.locale.languageCode == 'en'
+                          ? 'Donate'
+                          : 'عطیہ کریں',
                       style: TextStyle(
                         fontSize: 20,
                         fontFamily: 'semi-bold',
