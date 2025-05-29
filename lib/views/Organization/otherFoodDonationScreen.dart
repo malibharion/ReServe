@@ -4,18 +4,18 @@ import 'package:reserve/StateManagment/localization.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class DonationRequestsScreen extends StatefulWidget {
-  const DonationRequestsScreen({super.key});
+class OtherDonationsScreen extends StatefulWidget {
+  const OtherDonationsScreen({super.key});
 
   @override
-  State<DonationRequestsScreen> createState() => _DonationRequestsScreenState();
+  State<OtherDonationsScreen> createState() => _OtherDonationsScreenState();
 }
 
-class _DonationRequestsScreenState extends State<DonationRequestsScreen> {
+class _OtherDonationsScreenState extends State<OtherDonationsScreen> {
   final supabase = Supabase.instance.client;
-
   List<dynamic> donationRequests = [];
   bool isLoading = true;
+
   Future<void> launchMapsUrl(String latitude, String longitude) async {
     final googleMapsUrl = Uri.parse(
         "https://www.google.com/maps/search/?api=1&query=$latitude,$longitude");
@@ -28,7 +28,6 @@ class _DonationRequestsScreenState extends State<DonationRequestsScreen> {
       } else if (await canLaunchUrl(googleMapsUrl)) {
         await launchUrl(googleMapsUrl, mode: LaunchMode.externalApplication);
       } else {
-        // Fallback
         await launchUrl(googleMapsUrl, mode: LaunchMode.platformDefault);
       }
     } catch (e) {
@@ -49,38 +48,51 @@ class _DonationRequestsScreenState extends State<DonationRequestsScreen> {
     setState(() => isLoading = true);
 
     try {
-      final data = await supabase.from('donation_requests').select('''
-  id,
-  status,
-  created_at,
-  city,
-  province,
-  latitude,
-  longitude,
-  requester:requester_id (
-    username,
-    mobile_number
-  ),
-  donation:donation_id (
-    product_name,
-    city,
-    latitude,
-    longitude,
-    province,
-    image_path,
-    donor:user_id (
-      username,
-      mobile_number
-    )
-  )
-''').order('created_at', ascending: false);
+      final data = await supabase.from('other_donation_requests').select('''
+      status,
+      created_at,
+      city,
+      province,
+      latitude,
+      longitude,
+      other_donation_id,
+      requestor_id,
+      requester:requestor_id (
+        username,
+        mobile_number,
+        user_profile_pic
+      ),
+      donation:other_donation_id (
+        id,
+        product_name,
+        city,
+        latitude,
+        longitude,
+        province,
+        image_path,
+        donor:user_id (
+          username,
+          mobile_number,
+          user_profile_pic
+        )
+      )
+    ''').order('created_at', ascending: false);
+
+      // Transform the data to include a composite ID for easier reference
+      final transformedData = data.map((item) {
+        return {
+          ...item,
+          'id':
+              '${item['other_donation_id']}_${item['requestor_id']}', // Create a composite ID
+        };
+      }).toList();
 
       setState(() {
-        donationRequests = data;
+        donationRequests = transformedData;
         isLoading = false;
       });
     } catch (e) {
-      print('Error fetching donation requests: $e');
+      print('Error fetching other donation requests: $e');
       setState(() => isLoading = false);
     }
   }
@@ -98,53 +110,72 @@ class _DonationRequestsScreenState extends State<DonationRequestsScreen> {
     }
   }
 
+  Future<void> updateStatus(String newStatus, String compositeId) async {
+    try {
+      print(
+          '🔄 Attempting to update status to $newStatus for compositeId: $compositeId');
+
+      final ids = compositeId.split('_');
+      if (ids.length != 2) {
+        print(
+            '❌ Invalid compositeId format. Expected format: otherDonationId_requestorId');
+        return;
+      }
+
+      final otherDonationId = ids[0];
+      final requestorId = ids[1];
+
+      // Update status in other_donation_requests
+      final updateRequestResponse = await supabase
+          .from('other_donation_requests')
+          .update({'status': newStatus})
+          .eq('other_donation_id', otherDonationId)
+          .eq('requestor_id', requestorId);
+
+      print('✅ Updated other_donation_requests: $updateRequestResponse');
+
+      // Update status in other_donations table
+      final updateDonationResponse = await supabase
+          .from('other_donations')
+          .update({'status': newStatus}).eq('id', otherDonationId);
+
+      print('✅ Updated other_donations: $updateDonationResponse');
+
+      setState(() {
+        donationRequests = donationRequests.map((item) {
+          if (item['id'] == compositeId) {
+            return {...item, 'status': newStatus};
+          }
+          return item;
+        }).toList();
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Status updated to $newStatus')),
+      );
+    } catch (e) {
+      print('❌ Error updating status: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update status: $e')),
+      );
+    }
+  }
+
   Widget buildRequestCard(dynamic item) {
     final localizationProvider = Provider.of<LocalizationProvider>(context);
     final requester = item['requester'];
     final donation = item['donation'];
     final donor = donation != null ? donation['donor'] : null;
     final imagePath = donation != null ? donation['image_path'] : null;
+
     Future<String?> getProfileImageUrl(String? path) async {
       if (path == null || path.isEmpty) return null;
-
       try {
-        // If the path already looks like a full URL, just return it directly
-        if (path.startsWith('http')) {
-          print('Profile image path is full URL: $path');
-          return path;
-        }
-
-        // Otherwise, treat path as relative and get public URL from storage
-        print('Profile image path is relative: $path');
-        final publicUrl = supabase.storage.from('reserve').getPublicUrl(path);
-        print('Generated public URL: $publicUrl');
-        return publicUrl;
+        if (path.startsWith('http')) return path;
+        return supabase.storage.from('reserve').getPublicUrl(path);
       } catch (e) {
         print('Error getting profile image URL: $e');
         return null;
-      }
-    }
-
-    Future<void> updateStatus(String newStatus) async {
-      try {
-        final requestId = item['id'];
-        if (requestId == null) return;
-
-        await supabase
-            .from('donation_requests')
-            .update({'status': newStatus}).eq('id', requestId);
-
-        setState(() {
-          item['status'] = newStatus;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Status updated to $newStatus')),
-        );
-      } catch (e) {
-        print('Error updating status: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to update status: $e')),
-        );
       }
     }
 
@@ -158,7 +189,7 @@ class _DonationRequestsScreenState extends State<DonationRequestsScreen> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           elevation: 6,
-          shadowColor: Colors.green.withOpacity(0.3),
+          shadowColor: Colors.blue.withOpacity(0.3),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -191,22 +222,26 @@ class _DonationRequestsScreenState extends State<DonationRequestsScreen> {
                     ),
                   )
                 else
-                  Text(
-                    localizationProvider.locale.languageCode == 'en'
-                        ? 'No image available'
-                        : 'کوئی تصویر دستیاب نہیں',
-                    style: TextStyle(color: Colors.grey[600]),
+                  Container(
+                    height: 180,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Center(
+                      child: Text(
+                        localizationProvider.locale.languageCode == 'en'
+                            ? 'No image available'
+                            : 'کوئی تصویر دستیاب نہیں',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    ),
                   ),
                 const SizedBox(height: 15),
                 Text(
                   donation != null
-                      ? donation['product_name'] ??
-                          (localizationProvider.locale.languageCode == 'en'
-                              ? 'No product'
-                              : 'کوئی مصنوعات نہیں')
-                      : (localizationProvider.locale.languageCode == 'en'
-                          ? 'No product'
-                          : 'کوئی مصنوعات نہیں'),
+                      ? donation['product_name'] ?? 'No product'
+                      : 'No product',
                   style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -247,9 +282,8 @@ class _DonationRequestsScreenState extends State<DonationRequestsScreen> {
                 Row(
                   children: [
                     FutureBuilder<String?>(
-                      future: getProfileImageUrl(requester != null
-                          ? requester['user_profile_pic']
-                          : null),
+                      future:
+                          getProfileImageUrl(requester?['user_profile_pic']),
                       builder: (context, snap) {
                         final url = snap.data;
                         return CircleAvatar(
@@ -285,16 +319,12 @@ class _DonationRequestsScreenState extends State<DonationRequestsScreen> {
                                 fontSize: 16,
                                 color: Colors.grey[800]),
                           ),
-                          Text(requester != null
-                              ? (requester['username'] ?? '')
-                              : ''),
+                          Text(requester?['username'] ?? ''),
                           Text(
                             '📍 ${item['city'] ?? ''}, ${item['province'] ?? ''}',
                             style: TextStyle(color: Colors.grey[700]),
                           ),
-                          Text(requester != null
-                              ? '📞 ${requester['mobile_number'] ?? ''}'
-                              : ''),
+                          Text(requester?['mobile_number'] ?? ''),
                         ],
                       ),
                     ),
@@ -304,12 +334,12 @@ class _DonationRequestsScreenState extends State<DonationRequestsScreen> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: TextButton.icon(
-                      icon: const Icon(Icons.location_on, color: Colors.green),
+                      icon: const Icon(Icons.location_on, color: Colors.blue),
                       label: Text(
                         localizationProvider.locale.languageCode == 'en'
                             ? 'Requester Location'
                             : 'درخواست دہندہ کا مقام',
-                        style: const TextStyle(color: Colors.green),
+                        style: const TextStyle(color: Colors.blue),
                       ),
                       onPressed: () {
                         final lat = item['latitude'].toString();
@@ -322,8 +352,7 @@ class _DonationRequestsScreenState extends State<DonationRequestsScreen> {
                 Row(
                   children: [
                     FutureBuilder<String?>(
-                      future: getProfileImageUrl(
-                          donor != null ? donor['user_profile_pic'] : null),
+                      future: getProfileImageUrl(donor?['user_profile_pic']),
                       builder: (context, snap) {
                         final url = snap.data;
                         return CircleAvatar(
@@ -359,14 +388,12 @@ class _DonationRequestsScreenState extends State<DonationRequestsScreen> {
                                 fontSize: 16,
                                 color: Colors.grey[800]),
                           ),
-                          Text(donor != null ? (donor['username'] ?? '') : ''),
+                          Text(donor?['username'] ?? ''),
                           Text(
-                            '📍 ${donation != null ? (donation['city'] ?? '') : ''}, ${donation != null ? (donation['province'] ?? '') : ''}',
+                            '📍 ${donation?['city'] ?? ''}, ${donation?['province'] ?? ''}',
                             style: TextStyle(color: Colors.grey[700]),
                           ),
-                          Text(donor != null
-                              ? '📞 ${donor['mobile_number'] ?? ''}'
-                              : ''),
+                          Text(donor?['mobile_number'] ?? ''),
                         ],
                       ),
                     ),
@@ -378,12 +405,12 @@ class _DonationRequestsScreenState extends State<DonationRequestsScreen> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: TextButton.icon(
-                      icon: const Icon(Icons.location_on, color: Colors.green),
+                      icon: const Icon(Icons.location_on, color: Colors.blue),
                       label: Text(
                         localizationProvider.locale.languageCode == 'en'
                             ? 'Donor Location'
                             : 'دانی کا مقام',
-                        style: const TextStyle(color: Colors.green),
+                        style: const TextStyle(color: Colors.blue),
                       ),
                       onPressed: () {
                         final donorLat = donation['latitude'].toString();
@@ -412,7 +439,7 @@ class _DonationRequestsScreenState extends State<DonationRequestsScreen> {
                       ),
                       onPressed: item['status'] == 'Approved'
                           ? null
-                          : () => updateStatus('Approved'),
+                          : () => updateStatus('Approved', item['id']),
                     ),
                     const SizedBox(width: 12),
                     ElevatedButton.icon(
@@ -431,7 +458,7 @@ class _DonationRequestsScreenState extends State<DonationRequestsScreen> {
                       ),
                       onPressed: item['status'] == 'Rejected'
                           ? null
-                          : () => updateStatus('Rejected'),
+                          : () => updateStatus('Rejected', item['id']),
                     ),
                   ],
                 ),
@@ -449,11 +476,11 @@ class _DonationRequestsScreenState extends State<DonationRequestsScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF0F4F7),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF5DCE35),
+        backgroundColor: const Color(0xFF4285F4),
         title: Text(
           localizationProvider.locale.languageCode == 'en'
-              ? 'Donation Requests'
-              : 'عطیہ کی درخواستیں',
+              ? 'Other Donation Requests'
+              : 'دیگر عطیہ کی درخواستیں',
         ),
       ),
       body: isLoading

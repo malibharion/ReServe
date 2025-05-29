@@ -36,14 +36,14 @@ class DonationService {
     required String country,
     required String userId,
   }) async {
-    print("📦 Sending donation request...");
+    print("📦 Sending donation ...");
     print("Product: $productName");
     print("Description: $productDescription");
     print("Location: $latitude, $longitude");
     print("Address: $city, $area, $province, $country");
     print("User ID: $userId");
 
-    final response = await supabase.from('other_donations_request').insert({
+    final response = await supabase.from('other_donations').insert({
       'product_name': productName,
       'product_description': productDescription,
       'latitude': latitude,
@@ -136,7 +136,7 @@ class DonationService {
     required String province,
     required String country,
   }) async {
-    await supabase.from('other_donation_request').insert({
+    await supabase.from('other_donation_requests').insert({
       'donation_id': donationId,
       'requester_id': requesterId,
       'status': status,

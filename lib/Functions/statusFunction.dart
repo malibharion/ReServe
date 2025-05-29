@@ -51,7 +51,7 @@ Future<List<DonationStatus>> fetchUserStatuses(String userId) async {
         .from('other_donation_requests')
         .select('status')
         .eq('other_donation_id', donation['id'])
-        .eq('requester_id', userId)
+        .eq('requestor_id', userId)
         .maybeSingle();
 
     final fallbackStatus = donation['status'] ?? 'Unknown';
@@ -100,7 +100,7 @@ Future<List<DonationStatus>> fetchUserStatuses(String userId) async {
       .from('other_donation_requests')
       .select(
           'status, other_donation_id, other_donations(product_name, product_description, image_path)')
-      .eq('requester_id', userId)
+      .eq('requestor_id', userId)
       .eq('isfood', false)
       .order('created_at', ascending: false);
 

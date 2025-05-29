@@ -86,8 +86,9 @@ class DonationProvider with ChangeNotifier {
 
       final response = await _supabase
           .from('other_donations')
-          .select('*, user_profiles(username, mobile_number)')
-          .neq('user_id', userProfileId) // exclude current user's posts
+          .select(
+              '*, user_profiles!other_donations_user_id_fkey(username, mobile_number)')
+          .neq('user_id', userProfileId)
           .order('created_at', ascending: false);
 
       print('Other donations response: $response');
@@ -163,6 +164,8 @@ class DonationProvider with ChangeNotifier {
   //request other donations
   Future<void> otherDonations({
     required bool isFood,
+    required String latitude,
+    required String longitude,
     required String donationId,
     required String requesterId,
     required String city,
@@ -178,8 +181,10 @@ class DonationProvider with ChangeNotifier {
       await _supabase.from('other_donation_requests').insert({
         'isfood': isFood,
         'other_donation_id': donationId,
-        'requester_id': requesterId,
+        'requestor_id': requesterId,
         'city': city,
+        'latitude': latitude,
+        'longitude': longitude,
         'area': area,
         'province': province,
         'status': status,

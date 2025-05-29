@@ -7,12 +7,14 @@ import 'package:reserve/CustomsWidgets/homeContainer1.dart';
 import 'package:reserve/CustomsWidgets/homeContainer2.dart';
 import 'package:reserve/CustomsWidgets/homeNavigationContainer.dart';
 import 'package:reserve/Functions/userId.dart';
+import 'package:reserve/StateManagment/authProvider.dart';
 import 'package:reserve/StateManagment/localization.dart';
 import 'package:reserve/StateManagment/themechnager.dart';
 import 'package:reserve/views/Food/foodDonationScreen.dart';
 import 'package:reserve/views/Food/foodScreenMain.dart';
 import 'package:reserve/views/Other%20Item%20Donation/OtherItemDonationMainScreen.dart';
 import 'package:reserve/views/Student%20Fee%20views/studentFeeMain.dart';
+import 'package:reserve/views/allRequestScreen.dart';
 import 'package:reserve/views/login&signUp/userLoginScreen.dart';
 import 'package:reserve/views/notifactionscreen.dart';
 import 'package:reserve/views/reportScreen.dart';
@@ -70,19 +72,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final localizationProvider = Provider.of<LocalizationProvider>(context);
     return Scaffold(
-        appBar: AppBar(
-          actions: [
-            GestureDetector(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return DonationStatusScreen(
-                      userId: currentUserId.toString(),
-                    );
-                  }));
-                },
-                child: Icon(Icons.notifications)),
-          ],
-        ),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: SafeArea(
           child: SingleChildScrollView(
@@ -91,80 +80,122 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 SizedBox(height: 30.h),
                 HomeScreenContainerName(
-                  name: localizationProvider.locale.languageCode == 'en'
-                      ? 'User'
-                      : 'صارف',
+                  name: username,
                   image: profileImage,
                 ),
                 SizedBox(height: 35.h),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return StudentFeeMain();
-                          }));
-                        },
-                        child: HomeNavigationContainer(
-                          name: localizationProvider.locale.languageCode == 'en'
-                              ? 'Education'
-                              : 'تعلیم',
-                          image: const AssetImage(
-                              'assets/images/educationLogo.png'),
-                        ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return StudentFeeMain();
+                        }));
+                      },
+                      child: HomeNavigationContainer(
+                        name: localizationProvider.locale.languageCode == 'en'
+                            ? 'Education'
+                            : 'تعلیم',
+                        image:
+                            const AssetImage('assets/images/educationLogo.png'),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return FoodScreenMain();
-                          }));
-                        },
-                        child: HomeNavigationContainer(
-                          name: localizationProvider.locale.languageCode == 'en'
-                              ? 'Food'
-                              : 'خوراک',
-                          image: const AssetImage('assets/images/foodLogo.png'),
-                        ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return FoodScreenMain();
+                        }));
+                      },
+                      child: HomeNavigationContainer(
+                        name: localizationProvider.locale.languageCode == 'en'
+                            ? 'Food'
+                            : 'خوراک',
+                        image: const AssetImage('assets/images/foodLogo.png'),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return OtherItmeDonationScreenMain();
-                          }));
-                        },
-                        child: HomeNavigationContainer(
-                          name: localizationProvider.locale.languageCode == 'en'
-                              ? 'Donation'
-                              : 'عطیہ',
-                          image: const AssetImage(
-                              'assets/images/DonationLogo.png'),
-                        ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return OtherItmeDonationScreenMain();
+                        }));
+                      },
+                      child: HomeNavigationContainer(
+                        name: localizationProvider.locale.languageCode == 'en'
+                            ? 'Donation'
+                            : 'عطیہ',
+                        image:
+                            const AssetImage('assets/images/DonationLogo.png'),
                       ),
-                      SizedBox(height: 30.h),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return YourDonationsScreen();
-                          }));
-                        },
-                        child: HomeNavigationContainer(
-                          name: localizationProvider.locale.languageCode == 'en'
-                              ? 'Your Donation'
-                              : 'عطیہ',
-                          image: const AssetImage(
-                              'assets/images/icons8-report-30.png'),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+                SizedBox(
+                  height: 15.h,
+                ),
+
+                //Second rowwwww
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    SizedBox(height: 30.h),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return YourDonationsScreen();
+                        }));
+                      },
+                      child: HomeNavigationContainer(
+                        name: localizationProvider.locale.languageCode == 'en'
+                            ? 'Your Donation'
+                            : 'عطیہ',
+                        image: const AssetImage(
+                            'assets/images/icons8-report-30.png'),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return MyRequestsScreen(
+                            userId: currentUserId.toString(),
+                          );
+                        }));
+                      },
+                      child: HomeNavigationContainer(
+                        name: localizationProvider.locale.languageCode == 'en'
+                            ? 'Requests'
+                            : 'عطیہ',
+                        image: const AssetImage(
+                            'assets/images/icons8-request-30.png'),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return DonationStatusScreen(
+                            userId: currentUserId.toString(),
+                          );
+                        }));
+                      },
+                      child: HomeNavigationContainer(
+                        name: localizationProvider.locale.languageCode == 'en'
+                            ? 'Donation Status'
+                            : 'عطیہ',
+                        image: const AssetImage(
+                            'assets/images/icons8-status-30.png'),
+                      ),
+                    ),
+                  ],
+                ),
+
+                //------------------------
+
                 SizedBox(height: 40.h),
                 HomeContainer2(
                   text: localizationProvider.locale.languageCode == 'en'
@@ -214,7 +245,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 themeProvider.toggleTheme(!themeProvider.isDarkMode);
                 break;
               case 2:
-                // Handle logout here
+                Provider.of<AuthProvider>(context, listen: false).signOut();
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return UserLoginScreen();
+                }));
                 break;
             }
           },

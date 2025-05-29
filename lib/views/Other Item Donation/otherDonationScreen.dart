@@ -97,6 +97,8 @@ class _OtherItmeDonationDetailScreenState
                         isFood: false,
                         donationId: widget.donation.id,
                         requesterId: userId,
+                        latitude: position.latitude.toString(),
+                        longitude: position.longitude.toString(),
                         status: 'Pending',
                         city: address['city'] ?? 'Unknown',
                         area: address['area'] ?? 'Unknown',

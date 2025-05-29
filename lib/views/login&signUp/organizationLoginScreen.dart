@@ -16,6 +16,8 @@ class OrganizationLoginScreen extends StatefulWidget {
 }
 
 class _OrganizationLoginScreenState extends State<OrganizationLoginScreen> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final localizationProvider = Provider.of<LocalizationProvider>(context);
@@ -24,86 +26,100 @@ class _OrganizationLoginScreenState extends State<OrganizationLoginScreen> {
       body: Center(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image(image: AssetImage('assets/images/reserveLogo.png')),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.01,
-              ),
-              Text(
-                localizationProvider.locale.languageCode == 'en'
-                    ? 'Login'
-                    : 'لاگ ان',
-                style: TextStyle(fontSize: 30, fontFamily: 'semi-bold'),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.02,
-              ),
-              MyTextFeild(
-                prefixIcon: Icons.email,
-                hintText: localizationProvider.locale.languageCode == 'en'
-                    ? 'Email'
-                    : 'ای میل',
-                obscureText: false,
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.02,
-              ),
-              MyTextFeild(
-                prefixIcon: Icons.email,
-                hintText: localizationProvider.locale.languageCode == 'en'
-                    ? 'Password'
-                    : 'پاس ورڈ',
-                obscureText: true,
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.02,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => MainRequestsScreen()));
-                },
-                child: Text(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image(image: AssetImage('assets/images/reserveLogo.png')),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.01,
+                ),
+                Text(
                   localizationProvider.locale.languageCode == 'en'
                       ? 'Login'
                       : 'لاگ ان',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontFamily: 'semi-bold',
-                    color: Colors.white,
+                  style: TextStyle(fontSize: 30, fontFamily: 'semi-bold'),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.02,
+                ),
+                MyTextFeild(
+                  controller: emailController,
+                  prefixIcon: Icons.email,
+                  hintText: localizationProvider.locale.languageCode == 'en'
+                      ? 'Email'
+                      : 'ای میل',
+                  obscureText: false,
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.02,
+                ),
+                MyTextFeild(
+                  controller: passwordController,
+                  prefixIcon: Icons.email,
+                  hintText: localizationProvider.locale.languageCode == 'en'
+                      ? 'Password'
+                      : 'پاس ورڈ',
+                  obscureText: true,
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.02,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    final email = emailController.text.trim();
+                    final password = passwordController.text;
+
+                    if (email == 'malik@gmail.com' && password == '12345678') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MainRequestsScreen()),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Incorrect email or password')),
+                      );
+                    }
+                  },
+                  child: Text(
+                    localizationProvider.locale.languageCode == 'en'
+                        ? 'Login'
+                        : 'لاگ ان',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'semi-bold',
+                      color: Colors.white,
+                    ),
                   ),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF5DCE35),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      minimumSize: Size(double.infinity, 50)),
                 ),
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF5DCE35),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    minimumSize: Size(double.infinity, 50)),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.02,
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.09,
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => UserLoginScreen()));
-                },
-                child: Text(
-                  localizationProvider.locale.languageCode == 'en'
-                      ? 'Login in as User'
-                      : 'صارف کے طور پر لاگ ان کریں',
-                  style: TextStyle(color: Colors.black, fontSize: 15.sp),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.02,
                 ),
-              )
-            ],
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.09,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => UserLoginScreen()));
+                  },
+                  child: Text(
+                    localizationProvider.locale.languageCode == 'en'
+                        ? 'Login in as User'
+                        : 'صارف کے طور پر لاگ ان کریں',
+                    style: TextStyle(color: Colors.black, fontSize: 15.sp),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
