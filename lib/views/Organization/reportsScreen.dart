@@ -257,7 +257,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
           ),
         ],
       ),
-      backgroundColor: const Color(0xFFF6F9FF),
+      backgroundColor: Colors.white,
     );
   }
 }

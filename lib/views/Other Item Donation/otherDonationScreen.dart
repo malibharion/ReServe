@@ -67,13 +67,6 @@ class _OtherItmeDonationDetailScreenState
                   style: const TextStyle(fontFamily: 'light'),
                 ),
               ],
-              if (widget.donation.mobileNumber != null) ...[
-                const SizedBox(height: 10),
-                Text(
-                  widget.donation.mobileNumber!,
-                  style: const TextStyle(fontFamily: 'light'),
-                ),
-              ],
               const Spacer(),
               Padding(
                 padding: const EdgeInsets.only(bottom: 20),

@@ -110,14 +110,6 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                           ),
                         ],
                       ),
-                    if (widget.donation.mobileNumber != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: Text(
-                          '📞 ${widget.donation.mobileNumber}',
-                          style: const TextStyle(fontSize: 15),
-                        ),
-                      ),
                   ],
                 ),
               ),
